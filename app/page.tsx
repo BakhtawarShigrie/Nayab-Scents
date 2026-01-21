@@ -305,7 +305,7 @@ export default function Home() {
       </div>
 
       {/* --- PRODUCT CATEGORIES SECTION (NEW) --- */}
-      <section className="bg-white py-12 md:pt-14 border-gray-100">
+      <section className="bg-white py-12 md:pt-14 hidden sm:block border-gray-100">
         <div className="max-w-7xl mx-auto px-10 md:px-12">
           {/* Changed to GRID on Mobile (grid-cols-2) and FLEX on Desktop */}
           <div className="grid grid-cols-2 gap-y-8 gap-x-6 md:flex md:gap-8 md:justify-center">
