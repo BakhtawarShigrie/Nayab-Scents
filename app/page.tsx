@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
-// --- Data for Categories (Screenshot based) ---
+// --- Data for Categories ---
 const CATEGORIES = [
   { name: "Find-A-Fragrance", image: "/bottle-01.png" },
   { name: "Discovery Boxes", image: "/bottle-01.png" },
@@ -22,7 +23,6 @@ const ProductCard = ({ title, price, image }: { title: string, price: string, im
       className="relative group bg-white border border-gray-100 rounded-lg overflow-hidden cursor-pointer h-[430px] shadow-sm transition-all duration-300 hover:shadow-xl"
       onClick={() => setIsClicked(!isClicked)}
     >
-      {/* Product Image (Clean look like img-02) */}
       <div className="w-full lg: h-[80.5%] relative p-6 bg-[#f9f9f9]">
         <Image 
           src={image} 
@@ -32,7 +32,6 @@ const ProductCard = ({ title, price, image }: { title: string, price: string, im
         />
       </div>
 
-      {/* Basic Info (Visible initially) */}
       <div className="p-5 flex justify-between items-start text-black group-hover:opacity-0 transition-opacity duration-300">
         <div>
           <h3 className="font-bold text-xl leading-tight">{title}</h3>
@@ -41,7 +40,6 @@ const ProductCard = ({ title, price, image }: { title: string, price: string, im
         <span className="font-bold text-xl">{price}</span>
       </div>
 
-      {/* Detail Overlay (Desktop: Hover | Mobile: Click - img-03 style) */}
       <div className={`absolute bottom-0 left-0 w-full bg-white p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] flex flex-col justify-between transition-transform duration-500 ease-in-out z-20 
         ${isClicked ? 'translate-y-0' : 'translate-y-full'} 
         group-hover:translate-y-0`}
@@ -65,17 +63,6 @@ const ProductCard = ({ title, price, image }: { title: string, price: string, im
               ))}
             </div>
           </div>
-
-          {/* <div className="mb-8">
-            <p className="font-bold text-black mb-3 text-sm uppercase tracking-wide">Colors</p>
-            <div className="flex gap-3">
-              <div className="w-7 h-7 rounded-full bg-emerald-800 border border-gray-200 cursor-pointer hover:scale-110 transition-transform" />
-              <div className="w-7 h-7 rounded-full bg-black border border-gray-200 cursor-pointer hover:scale-110 transition-transform" />
-              <div className="w-7 h-7 rounded-full bg-red-600 border border-gray-200 cursor-pointer hover:scale-110 transition-transform" />
-              <div className="w-7 h-7 rounded-full bg-yellow-700 border border-gray-200 cursor-pointer hover:scale-110 transition-transform" />
-              <div className="w-7 h-7 rounded-full bg-blue-900 border border-gray-200 cursor-pointer hover:scale-110 transition-transform" />
-            </div>
-          </div> */}
         </div>
 
         <div className="flex gap-3 w-full">
@@ -91,41 +78,100 @@ const ProductCard = ({ title, price, image }: { title: string, price: string, im
   );
 };
 
+// --- Collection Card Component ---
+const CollectionCard = ({ title, image, bgClass }: { title: string, image: string, bgClass: string }) => {
+  return (
+    <div className={`relative h-[400px] w-full rounded-2xl overflow-hidden cursor-pointer group shadow-lg ${bgClass}`}>
+      <div className="absolute inset-0 w-full h-full">
+        <Image 
+          src={image} 
+          alt={title} 
+          fill 
+          className="object-cover opacity-90 transition-transform duration-700 group-hover:scale-110"
+        />
+        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300" />
+      </div>
+      <div className="absolute inset-0 flex items-center justify-center p-4 z-10">
+        <h3 className="text-white text-xl md:text-xl font-bold uppercase tracking-widest text-center drop-shadow-lg leading-snug">
+          {title}
+        </h3>
+      </div>
+    </div>
+  );
+};
+
+// --- NAYAB WATCHES AD SECTION (UPDATED UI) ---
+const AdSection = () => {
+  // Use your watch image here. Using Dcover.webp as placeholder for now.
+  const adBgImage = "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765389587/ad-01_cnjaax.jpg"; 
+
+  return (
+    <section className="relative h-[100vh] md:h-screen w-full overflow-hidden bg-black">
+      {/* Background Image */}
+      <Image 
+        src={adBgImage} 
+        alt="Dark Side of the Moon Watch" 
+        fill 
+        className="object-cover object-center" 
+        priority 
+      />
+      
+      {/* Gradient Overlay: This creates the dark fade on the left side like the screenshot */}
+      {/* <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent"></div> */}
+      
+      {/* Content Container */}
+      <div className="absolute inset-0 flex flex-col justify-end px-8 md:px-24 z-10">
+        <div className="max-w-2xl">
+          {/* Small Top Label */}
+          <div className="absolute top-0 mt-[4em] text-gray-300 text-sm md:text-sm font-bold uppercase tracking-[0.2em] mb-5">
+              Nayab Watches
+          </div>
+          
+          {/* Main Heading with Serif Font */}
+          <h2 className="text-4xl md:text-5xl font-serif text-white mb-3 leading-tight">
+            Nayab Watches<br /> Timeless Luxury.
+          </h2>
+          
+          {/* Description Text */}
+          <p className="text-gray-300 text-sm md:text-base mb-6 leading-relaxed font-light max-w-md">
+          Step into a world of elegance with Nayab Watches. We bring you an exclusive collection of 
+            <span className="text-white font-medium"> premium branded timepieces</span>.
+          </p>
+          
+          {/* Gold Button */}
+          <Link href="https://nayabwatch.com" target="_blank">
+            <button className="bg-[#D4B07B] hover:bg-[#c29e6b] mb-15 text-black px-8 py-4 rounded-sm text-xs md:text-sm font-bold uppercase tracking-wider transition-colors duration-300 shadow-lg">
+              Explore our Watches
+            </button>
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 // --- Main Page ---
 export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Scroll Calculation Logic (Relative to Hero Container)
   useEffect(() => {
     const handleScroll = () => {
       if (!containerRef.current) return;
-      
       const containerTop = containerRef.current.getBoundingClientRect().top;
-      const containerHeight = containerRef.current.offsetHeight; // 500vh
+      const containerHeight = containerRef.current.offsetHeight; 
       const windowHeight = window.innerHeight;
-      
-      // Calculate how much we have scrolled WITHIN the hero container
-      // Using -containerTop gives us the pixels scrolled from the start of the container
       const scrollTop = -containerTop; 
       const scrollableDistance = containerHeight - windowHeight;
-      
       let progress = scrollTop / scrollableDistance;
-      
-      // Clamp progress between 0 and 1
       progress = Math.min(Math.max(progress, 0), 1);
-      
       setScrollProgress(progress);
     };
-
     window.addEventListener("scroll", handleScroll);
     handleScroll(); 
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // --- Animation Phases ---
-  
   const heroProgress = Math.min(scrollProgress * 6.6, 1);
   const heroOpacity = 1 - heroProgress;
   
@@ -151,7 +197,6 @@ export default function Home() {
   }
   const baseScale = 0.8 + (0.2 * bottleEntry);
 
-  // Phase 6: Blur & Vanish (Bottle disappears at 85% scroll of hero)
   let vanishProgress = 0;
   if (scrollProgress > 0.85) {
     vanishProgress = Math.min((scrollProgress - 0.85) * 6.6, 1);
@@ -159,16 +204,13 @@ export default function Home() {
   const bottleFinalOpacity = bottleEntry * (1 - vanishProgress);
   const bottleBlur = vanishProgress * 20;
 
-  // Background Animation: Scale up & Fade out to White
   const bgScale = 1 + (scrollProgress * 0.25);
   const bgBlur = scrollProgress * 10;
-  // Fade out background image as bottle vanishes so screen becomes white
   const bgOpacity = 1 - vanishProgress; 
 
   return (
-    <div className="bg-white"> {/* Base background is White so when hero fades, it shows white */}
+    <div className="bg-white"> 
       
-      {/* --- HERO SCROLL CONTAINER (500vh tall) --- */}
       <div 
         ref={containerRef} 
         className="relative h-[500vh]"
@@ -184,29 +226,14 @@ export default function Home() {
           ['--bg-opacity' as any]: bgOpacity,
         } as React.CSSProperties}
       >
-        
-        {/* --- STICKY VIEWPORT (Fixes the view while we scroll 500vh) --- */}
         <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
-          
-          {/* BACKGROUND (Black/Image) - Fades out at the end */}
           <div className="absolute inset-0 z-0 bg-black pointer-events-none" style={{ opacity: 'var(--bg-opacity)' }}>
-             <div className="relative w-full h-full"
-                  style={{ 
-                    transform: `scale(${bgScale})`,
-                    filter: `blur(${bgBlur}px)`
-                  }}>
-                <Image
-                  src="/Dcover-01.webp"
-                  alt="Background"
-                  fill
-                  priority
-                  className="object-cover opacity-60"
-                />
+             <div className="relative w-full h-full" style={{ transform: `scale(${bgScale})`, filter: `blur(${bgBlur}px)` }}>
+                <Image src="/Dcover-01.webp" alt="Background" fill priority className="object-cover opacity-60" />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80" />
              </div>
           </div>
 
-          {/* NAVBAR */}
           <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-4 md:px-8 md:py-6">
             <button className="text-white hover:opacity-80 transition-opacity p-1 mix-blend-difference">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 md:w-8 md:h-8">
@@ -218,14 +245,9 @@ export default function Home() {
             </button>
           </nav>
 
-          {/* HERO CONTENT (Text) */}
           <div 
             className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 transition-transform duration-75 ease-linear will-change-transform z-10"
-            style={{ 
-              opacity: 'var(--hero-opacity)', 
-              transform: 'translateY(var(--hero-y))',
-              pointerEvents: heroOpacity <= 0 ? 'none' : 'auto'
-            }}
+            style={{ opacity: 'var(--hero-opacity)', transform: 'translateY(var(--hero-y))', pointerEvents: heroOpacity <= 0 ? 'none' : 'auto' }}
           >
             <h1 className="text-4xl md:text-7xl font-bold tracking-tight mb-4 drop-shadow-xl leading-tight text-white">
               Unforgettable Scents,<br />Lasting Presence
@@ -238,53 +260,22 @@ export default function Home() {
             </button>
           </div>
 
-          {/* BOTTLE IMAGE (Animates & Vanishes) */}
           <div 
             className="absolute z-20 transition-transform duration-75 ease-linear will-change-transform [--zoom-factor:1.5] md:[--zoom-factor:0.5]"
-            style={{
-              opacity: 'var(--bottle-opacity)',
-              filter: 'blur(var(--bottle-blur))',
-              transform: `
-                scale(calc(var(--base-scale) + (var(--zoom-progress) * var(--zoom-factor))))
-                translateX(0)
-              ` 
-            }}
+            style={{ opacity: 'var(--bottle-opacity)', filter: 'blur(var(--bottle-blur))', transform: `scale(calc(var(--base-scale) + (var(--zoom-progress) * var(--zoom-factor)))) translateX(0)` }}
           >
-            <div className="transform transition-transform duration-75 ease-linear
-                            translate-y-[calc(var(--split-progress)*25vh)] 
-                            md:translate-y-0 
-                            md:translate-x-[calc(var(--split-progress)*25vw)]">
-               
+            <div className="transform transition-transform duration-75 ease-linear translate-y-[calc(var(--split-progress)*25vh)] md:translate-y-0 md:translate-x-[calc(var(--split-progress)*25vw)]">
                <div className="relative w-[50vw] h-[50vh] md:w-[25vw] md:h-[70vh]">
                 <div className="absolute inset-0 bg-green-600 rounded-full blur-3xl opacity-20 animate-pulse"></div>
-                <Image
-                  src="/bottle-01.png" 
-                  alt="Green Water Bottle"
-                  fill
-                  className="object-contain drop-shadow-2xl filter brightness-110"
-                  priority
-                />
+                <Image src="/bottle-01.png" alt="Green Water Bottle" fill className="object-contain drop-shadow-2xl filter brightness-110" priority />
               </div>
             </div>
           </div>
 
-          {/* FEATURE TEXT SECTION */}
-          <div 
-            className="absolute inset-0 flex flex-col pointer-events-none z-10"
-            style={{ opacity: 'var(--text-exit-opacity)' }}
-          >
+          <div className="absolute inset-0 flex flex-col pointer-events-none z-10" style={{ opacity: 'var(--text-exit-opacity)' }}>
             <div className="flex-1 flex items-start justify-center pt-24 md:pt-0 md:items-center md:justify-start px-6 md:px-24">
-              <div 
-                className="max-w-md md:max-w-lg text-center md:text-left transition-all duration-75 ease-linear"
-                style={{
-                  opacity: 'var(--split-progress)',
-                }}
-              >
-                <div className="transform transition-transform duration-75 ease-linear
-                                translate-y-[calc((1-var(--split-progress))*-20px)]
-                                md:translate-y-0
-                                md:translate-x-[calc((1-var(--split-progress))*-50px)]">
-                  
+              <div className="max-w-md md:max-w-lg text-center md:text-left transition-all duration-75 ease-linear" style={{ opacity: 'var(--split-progress)' }}>
+                <div className="transform transition-transform duration-75 ease-linear translate-y-[calc((1-var(--split-progress))*-20px)] md:translate-y-0 md:translate-x-[calc((1-var(--split-progress))*-50px)]">
                   <h2 className="text-3xl md:text-6xl font-bold mb-4 leading-tight drop-shadow-lg text-white">
                     Elevate Your <br />
                     <span className="text-green-400">Signature Scent</span>
@@ -292,7 +283,6 @@ export default function Home() {
                   <p className="text-sm md:text-lg text-gray-300 mb-6 leading-relaxed drop-shadow-md">
                     Meet the Nayab Scents collection, crafted for powerful projection, long-lasting wear, and undeniable sophistication.
                   </p>
-                  
                   <button className="pointer-events-auto rounded-full bg-green-600 px-6 py-2.5 md:px-8 md:py-3 font-semibold shadow-lg shadow-green-900/50 transition-all hover:bg-green-500 hover:scale-105 text-white">
                     Order Now
                   </button>
@@ -300,14 +290,11 @@ export default function Home() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
-      {/* --- PRODUCT CATEGORIES SECTION (NEW) --- */}
       <section className="bg-white py-12 md:pt-14 hidden sm:block border-gray-100">
         <div className="max-w-7xl mx-auto px-10 md:px-12">
-          {/* Changed to GRID on Mobile (grid-cols-2) and FLEX on Desktop */}
           <div className="grid grid-cols-2 gap-y-8 gap-x-6 md:flex md:gap-8 md:justify-center">
             {CATEGORIES.map((cat, index) => (
               <div key={index} className="flex flex-col items-center gap-3 md:gap-4 cursor-pointer group">
@@ -323,18 +310,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- TRENDING SECTION (Starts AFTER Hero Scroll Ends) --- */}
-      <section className="relative z-30 bg-white pb-14 pt-10 sm:pt-16  px-6 md:px-20 min-h-screen">
+      <section className="relative z-30 bg-white pb-14 pt-10 sm:pt-16  px-6 md:px-20">
         <div className="max-w-7xl mx-auto">
-          
-          {/* Header & Filters (img-01 style) */}
           <div className="flex flex-col items-center mb-12 md:mb-16">
             <div className="flex items-center w-full mb-6 md:mb-8">
               <div className="flex-1 h-[1px] bg-gray-200" />
               <h2 className="text-2xl md:text-6xl font-bold text-black px-4 md:px-8 tracking-tight uppercase text-center whitespace-nowrap">Trending Products</h2>
               <div className="flex-1 h-[1px] bg-gray-200" />
             </div>
-            
             <div className="flex flex-wrap justify-center gap-3 md:gap-4">
               <button className="px-6 py-2 md:px-8 md:py-2.5 bg-black text-white rounded-full text-xs md:text-sm font-bold uppercase tracking-widest shadow-md">Best</button>
               <button className="px-6 py-2 md:px-8 md:py-2.5 border-2 border-gray-100 text-gray-400 rounded-full text-xs md:text-sm font-bold uppercase tracking-widest hover:border-black hover:text-black transition-all">Men</button>
@@ -342,23 +325,37 @@ export default function Home() {
               <button className="px-6 py-2 md:px-8 md:py-2.5 border-2 border-gray-100 text-gray-400 rounded-full text-xs md:text-sm font-bold uppercase tracking-widest hover:border-black hover:text-black transition-all">Unisex</button>
             </div>
           </div>
-
-          {/* Product Grid (img-02 & img-03 concept) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
             <ProductCard title="Classic Nayab" price="$20.99" image="/bottle-01.png" />
             <ProductCard title="Royal Scent" price="$35.00" image="/bottle-01.png" />
             <ProductCard title="Azure Mist" price="$25.50" image="/bottle-01.png" />
             <ProductCard title="Velvet Oud" price="$42.00" image="/bottle-01.png" />
           </div>
-
           <div className="flex justify-center mt-16">
             <button className="px-10 py-3 hover:bg-gray-200 cursor-pointer hover:text-black text-white rounded-full font-bold uppercase tracking-widest text-sm bg-gray-800 transition-all shadow-lg hover:shadow-xl">
               Show More
             </button>
           </div>
-
         </div>
       </section>
+
+      <section className="bg-white pb-20 pt-10 px-6 md:px-20 border-t border-gray-100/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center w-full mb-12">
+            <div className="flex-1 h-[1px] bg-gray-200" />
+            <h2 className="text-2xl md:text-6xl font-bold text-black px-4 md:px-8 tracking-tight uppercase text-center whitespace-nowrap">Our Collections</h2>
+            <div className="flex-1 h-[1px] bg-gray-200" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <CollectionCard title="Best Perfumes For Men" image="/bottle-01.png" bgClass="bg-gray-300" />
+            <CollectionCard title="Best Perfumes For Women" image="/bottle-01.png" bgClass="bg-[#e4d3d3]" />
+            <CollectionCard title="Gift Box" image="/bottle-01.png" bgClass="bg-red-900" />
+          </div>
+        </div>
+      </section>
+
+      {/* NAYAB WATCHES AD SECTION */}
+      <AdSection />
 
     </div>
   );
