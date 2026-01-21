@@ -9,11 +9,11 @@ const ProductCard = ({ title, price, image }: { title: string, price: string, im
 
   return (
     <div 
-      className="relative group bg-white border border-gray-100 rounded-lg overflow-hidden cursor-pointer h-[480px] shadow-sm transition-all duration-300 hover:shadow-xl"
+      className="relative group bg-white border border-gray-100 rounded-lg overflow-hidden cursor-pointer h-[430px] shadow-sm transition-all duration-300 hover:shadow-xl"
       onClick={() => setIsClicked(!isClicked)}
     >
       {/* Product Image (Clean look like img-02) */}
-      <div className="w-full h-[70%] relative p-6 bg-[#f9f9f9]">
+      <div className="w-full lg: h-[80.5%] relative p-6 bg-[#f9f9f9]">
         <Image 
           src={image} 
           alt={title} 
@@ -46,17 +46,17 @@ const ProductCard = ({ title, price, image }: { title: string, price: string, im
           </div>
 
           <div className="mb-6">
-            <p className="font-bold text-black mb-3 text-sm uppercase tracking-wide">Sizes</p>
+            <p className="font-bold text-black mb-3 text-sm uppercase tracking-wide">Bottle Size</p>
             <div className="flex gap-2">
-              {['XS', 'S', 'M', 'L', 'XL'].map(size => (
-                <button key={size} className="w-9 h-9 rounded-full bg-[#004d66] text-white text-[11px] font-bold flex items-center justify-center hover:scale-110 transition-transform shadow-md">
+              {['30 ml', '50 ml', '100 ml'].map(size => (
+                <button key={size} className="px-3 py-1.5 rounded-full bg-[#1a2b5a] text-white text-[11px] font-bold flex items-center justify-center hover:scale-105 transition-transform shadow-md">
                   {size}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="mb-8">
+          {/* <div className="mb-8">
             <p className="font-bold text-black mb-3 text-sm uppercase tracking-wide">Colors</p>
             <div className="flex gap-3">
               <div className="w-7 h-7 rounded-full bg-emerald-800 border border-gray-200 cursor-pointer hover:scale-110 transition-transform" />
@@ -65,12 +65,17 @@ const ProductCard = ({ title, price, image }: { title: string, price: string, im
               <div className="w-7 h-7 rounded-full bg-yellow-700 border border-gray-200 cursor-pointer hover:scale-110 transition-transform" />
               <div className="w-7 h-7 rounded-full bg-blue-900 border border-gray-200 cursor-pointer hover:scale-110 transition-transform" />
             </div>
-          </div>
+          </div> */}
         </div>
 
-        <button className="w-full bg-[#1a2b5a] text-white py-4 rounded-md font-bold uppercase tracking-widest hover:bg-black transition-colors shadow-lg">
-          Buy
-        </button>
+        <div className="flex gap-3 w-full">
+          <button className="flex-1 border border-gray-300 text-black py-3.5 rounded-md font-bold uppercase tracking-widest text-xs hover:bg-black hover:text-white hover:border-black transition-colors">
+            View Detail
+          </button>
+          <button className="flex-1 bg-[#1a2b5a] text-white py-3.5 rounded-md font-bold uppercase tracking-widest text-xs hover:bg-black transition-colors shadow-lg">
+            Order Now
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -213,10 +218,10 @@ export default function Home() {
             }}
           >
             <h1 className="text-4xl md:text-7xl font-bold tracking-tight mb-4 drop-shadow-xl leading-tight text-white">
-              Hydration, Anytime,<br />Anywhere
+              Unforgettable Scents,<br />Lasting Presence
             </h1>
             <p className="text-base md:text-xl text-gray-200 max-w-xs md:max-w-2xl mb-8 drop-shadow-md leading-relaxed">
-              Stay refreshed with our premium water bottles designed for durability, style, and sustainability.
+              Experience Nayab Scents – premium perfumes crafted for exceptional projection and long-lasting elegance.
             </p>
             <button className="rounded-full border border-white/50 bg-white/10 backdrop-blur-md px-6 py-2.5 md:px-8 md:py-3 font-semibold transition-all hover:bg-white hover:text-black text-white">
               Order Now
@@ -272,11 +277,12 @@ export default function Home() {
                   
                   <h2 className="text-3xl md:text-6xl font-bold mb-4 leading-tight drop-shadow-lg text-white">
                     Elevate Your <br />
-                    <span className="text-green-400">Hydration Game</span>
+                    <span className="text-green-400">Signature Scent</span>
                   </h2>
                   <p className="text-sm md:text-lg text-gray-300 mb-6 leading-relaxed drop-shadow-md">
-                    Meet the Green Steel Water Bottle, crafted for style, durability, and sustainability.
+                    Meet the Nayab Scents collection, crafted for powerful projection, long-lasting wear, and undeniable sophistication.
                   </p>
+                  
                   <button className="pointer-events-auto rounded-full bg-green-600 px-6 py-2.5 md:px-8 md:py-3 font-semibold shadow-lg shadow-green-900/50 transition-all hover:bg-green-500 hover:scale-105 text-white">
                     Order Now
                   </button>
@@ -313,6 +319,12 @@ export default function Home() {
             <ProductCard title="Royal Scent" price="$35.00" image="/bottle-01.png" />
             <ProductCard title="Azure Mist" price="$25.50" image="/bottle-01.png" />
             <ProductCard title="Velvet Oud" price="$42.00" image="/bottle-01.png" />
+          </div>
+
+          <div className="flex justify-center mt-16">
+            <button className="px-10 py-3 hover:bg-gray-200 cursor-pointer hover:text-black text-white rounded-full font-bold uppercase tracking-widest text-sm bg-gray-800 transition-all shadow-lg hover:shadow-xl">
+              Show More
+            </button>
           </div>
 
         </div>
