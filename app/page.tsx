@@ -329,10 +329,10 @@ export default function Home() {
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            <ProductCard title="Classic Nayab" price="$20.99" image="/bottle-01.png" />
-            <ProductCard title="Royal Scent" price="$35.00" image="/bottle-01.png" />
-            <ProductCard title="Azure Mist" price="$25.50" image="/bottle-01.png" />
-            <ProductCard title="Velvet Oud" price="$42.00" image="/bottle-01.png" />
+            <ProductCard title="Classic Nayab" price="Rs.2,999" image="/bottle-01.png" />
+            <ProductCard title="Royal Scent" price="Rs.3,500" image="/bottle-01.png" />
+            <ProductCard title="Azure Mist" price="Rs.5,650" image="/bottle-01.png" />
+            <ProductCard title="Velvet Oud" price="Rs.7,600" image="/bottle-01.png" />
           </div>
           <div className="flex justify-center mt-16">
             <button className="px-10 py-3 hover:bg-gray-200 cursor-pointer hover:text-black text-white rounded-full font-bold uppercase tracking-widest text-sm bg-gray-800 transition-all shadow-lg hover:shadow-xl">
