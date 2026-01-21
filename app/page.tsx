@@ -3,6 +3,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import MagazineSection from "./components/MagazineSection";
+import FAQSection from "./components/FAQSection";
+import Footer from "./components/Footer";
 
 // --- Data for Categories ---
 const CATEGORIES = [
@@ -356,6 +359,10 @@ export default function Home() {
 
       {/* NAYAB WATCHES AD SECTION */}
       <AdSection />
+
+      <MagazineSection />
+      <FAQSection />
+      <Footer />
 
     </div>
   );
