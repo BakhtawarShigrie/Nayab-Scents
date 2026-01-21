@@ -336,9 +336,10 @@ export default function Home() {
             </div>
             
             <div className="flex flex-wrap justify-center gap-3 md:gap-4">
-              <button className="px-6 py-2 md:px-8 md:py-2.5 bg-black text-white rounded-full text-xs md:text-sm font-bold uppercase tracking-widest shadow-md">Best Seller</button>
+              <button className="px-6 py-2 md:px-8 md:py-2.5 bg-black text-white rounded-full text-xs md:text-sm font-bold uppercase tracking-widest shadow-md">Best</button>
               <button className="px-6 py-2 md:px-8 md:py-2.5 border-2 border-gray-100 text-gray-400 rounded-full text-xs md:text-sm font-bold uppercase tracking-widest hover:border-black hover:text-black transition-all">Men</button>
               <button className="px-6 py-2 md:px-8 md:py-2.5 border-2 border-gray-100 text-gray-400 rounded-full text-xs md:text-sm font-bold uppercase tracking-widest hover:border-black hover:text-black transition-all">Women</button>
+              <button className="px-6 py-2 md:px-8 md:py-2.5 border-2 border-gray-100 text-gray-400 rounded-full text-xs md:text-sm font-bold uppercase tracking-widest hover:border-black hover:text-black transition-all">Unisex</button>
             </div>
           </div>
 
