@@ -299,17 +299,17 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           
           {/* Header & Filters (img-01 style) */}
-          <div className="flex flex-col items-center mb-16">
-            <div className="flex items-center w-full mb-8">
+          <div className="flex flex-col items-center mb-12 md:mb-16">
+            <div className="flex items-center w-full mb-6 md:mb-8">
               <div className="flex-1 h-[1px] bg-gray-200" />
-              <h2 className="text-3xl md:text-6xl font-bold text-black px-8 tracking-tight uppercase">Trending Products</h2>
+              <h2 className="text-2xl md:text-6xl font-bold text-black px-4 md:px-8 tracking-tight uppercase text-center whitespace-nowrap">Trending Products</h2>
               <div className="flex-1 h-[1px] bg-gray-200" />
             </div>
             
-            <div className="flex gap-4">
-              <button className="px-8 py-2.5 bg-black text-white rounded-full text-sm font-bold uppercase tracking-widest shadow-md">Best Seller</button>
-              <button className="px-8 py-2.5 border-2 border-gray-100 text-gray-400 rounded-full text-sm font-bold uppercase tracking-widest hover:border-black hover:text-black transition-all">Men</button>
-              <button className="px-8 py-2.5 border-2 border-gray-100 text-gray-400 rounded-full text-sm font-bold uppercase tracking-widest hover:border-black hover:text-black transition-all">Women</button>
+            <div className="flex flex-wrap justify-center gap-3 md:gap-4">
+              <button className="px-6 py-2 md:px-8 md:py-2.5 bg-black text-white rounded-full text-xs md:text-sm font-bold uppercase tracking-widest shadow-md">Best Seller</button>
+              <button className="px-6 py-2 md:px-8 md:py-2.5 border-2 border-gray-100 text-gray-400 rounded-full text-xs md:text-sm font-bold uppercase tracking-widest hover:border-black hover:text-black transition-all">Men</button>
+              <button className="px-6 py-2 md:px-8 md:py-2.5 border-2 border-gray-100 text-gray-400 rounded-full text-xs md:text-sm font-bold uppercase tracking-widest hover:border-black hover:text-black transition-all">Women</button>
             </div>
           </div>
 
