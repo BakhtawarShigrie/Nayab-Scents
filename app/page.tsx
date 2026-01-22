@@ -6,20 +6,17 @@ import Link from "next/link";
 import MagazineSection from "./components/MagazineSection";
 import FAQSection from "./components/FAQSection";
 import Footer from "./components/Footer";
+// Import data from database
+import { CATEGORIES, PRODUCTS, COLLECTIONS } from "@/database/data";
 
-// --- Data for Categories ---
-const CATEGORIES = [
-  { name: "Find-A-Fragrance", image: "/bottle-01.png" },
-  { name: "Discovery Boxes", image: "/bottle-01.png" },
-  { name: "Seasonal Scents", image: "/bottle-01.png" },
-  { name: "The Scented Letter", image: "/bottle-01.png" },
-  { name: "Nose/Perfumer", image: "/bottle-01.png" },
-  { name: "Nosing Around", image: "/bottle-01.png" },
-];
-
-// --- Product Card Component ---
-const ProductCard = ({ title, price, image }: { title: string, price: string, image: string }) => {
+// --- Product Card Component (UPDATED) ---
+// Note: Props type updated to accept `prices` object
+const ProductCard = ({ title, prices, image }: { title: string, prices: { [key: string]: string }, image: string }) => {
   const [isClicked, setIsClicked] = useState(false);
+  const [selectedSize, setSelectedSize] = useState("50 ml"); // Default size
+
+  // Current price based on selected size
+  const currentPrice = prices[selectedSize];
 
   return (
     <div 
@@ -35,14 +32,17 @@ const ProductCard = ({ title, price, image }: { title: string, price: string, im
         />
       </div>
 
+      {/* Default View (When not hovered/clicked) */}
       <div className="p-5 flex justify-between items-start text-black group-hover:opacity-0 transition-opacity duration-300">
         <div>
           <h3 className="font-bold text-xl leading-tight">{title}</h3>
           <p className="text-gray-500 text-sm">Nayab Premium Perfume</p>
         </div>
-        <span className="font-bold text-xl">{price}</span>
+        {/* Dynamic Price */}
+        <span className="font-bold text-xl">{currentPrice}</span>
       </div>
 
+      {/* Expanded View (Hover/Click) */}
       <div className={`absolute bottom-0 left-0 w-full bg-white p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] flex flex-col justify-between transition-transform duration-500 ease-in-out z-20 
         ${isClicked ? 'translate-y-0' : 'translate-y-full'} 
         group-hover:translate-y-0`}
@@ -53,14 +53,26 @@ const ProductCard = ({ title, price, image }: { title: string, price: string, im
               <h3 className="font-bold text-xl leading-tight">{title}</h3>
               <p className="text-gray-500 text-sm">Nayab Premium Perfume</p>
             </div>
-            <span className="font-bold text-xl">{price}</span>
+            {/* Dynamic Price */}
+            <span className="font-bold text-xl">{currentPrice}</span>
           </div>
 
           <div className="mb-6">
             <p className="font-bold text-black mb-3 text-sm uppercase tracking-wide">Bottle Size</p>
             <div className="flex gap-2">
               {['30 ml', '50 ml', '100 ml'].map(size => (
-                <button key={size} className="px-3 py-1.5 rounded-full bg-[#1a2b5a] text-white text-[11px] font-bold flex items-center justify-center hover:scale-105 transition-transform shadow-md">
+                <button 
+                  key={size}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Card click trigger na ho
+                    setSelectedSize(size);
+                  }}
+                  className={`px-3 py-1.5 rounded-full text-[11px] font-bold flex items-center justify-center transition-all shadow-sm ${
+                    selectedSize === size
+                      ? "bg-[#1a2b5a] text-white border border-[#1a2b5a]" // Active: Filled Color
+                      : "bg-transparent text-black border border-gray-300 hover:border-black" // Inactive: Transparent + Border
+                  }`}
+                >
                   {size}
                 </button>
               ))}
@@ -103,45 +115,31 @@ const CollectionCard = ({ title, image, bgClass }: { title: string, image: strin
   );
 };
 
-// --- NAYAB WATCHES AD SECTION (UPDATED UI) ---
+// --- NAYAB WATCHES AD SECTION ---
 const AdSection = () => {
-  // Use your watch image here. Using Dcover.webp as placeholder for now.
   const adBgImage = "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765389587/ad-01_cnjaax.jpg"; 
 
   return (
     <section className="relative h-[100vh] md:h-screen w-full overflow-hidden bg-black">
-      {/* Background Image */}
       <Image 
         src={adBgImage} 
-        alt="Dark Side of the Moon Watch" 
+        alt="Nayab Watches" 
         fill 
         className="object-cover object-center" 
         priority 
       />
-      
-      {/* Gradient Overlay: This creates the dark fade on the left side like the screenshot */}
-      {/* <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent"></div> */}
-      
-      {/* Content Container */}
       <div className="absolute inset-0 flex flex-col justify-end px-8 md:px-24 z-10">
         <div className="max-w-2xl">
-          {/* Small Top Label */}
           <div className="absolute top-0 mt-[4em] text-gray-300 text-sm md:text-sm font-bold uppercase tracking-[0.2em] mb-5">
               Nayab Watches
           </div>
-          
-          {/* Main Heading with Serif Font */}
           <h2 className="text-4xl md:text-5xl font-serif text-white mb-3 leading-tight">
             Nayab Watches<br /> Timeless Luxury.
           </h2>
-          
-          {/* Description Text */}
           <p className="text-gray-300 text-sm md:text-base mb-6 leading-relaxed font-light max-w-md">
           Step into a world of elegance with Nayab Watches. We bring you an exclusive collection of 
             <span className="text-white font-medium"> premium branded timepieces</span>.
           </p>
-          
-          {/* Gold Button */}
           <Link href="https://nayabwatch.com" target="_blank">
             <button className="bg-[#D4B07B] hover:bg-[#c29e6b] mb-15 text-black px-8 py-4 rounded-sm text-xs md:text-sm font-bold uppercase tracking-wider transition-colors duration-300 shadow-lg">
               Explore our Watches
@@ -329,10 +327,10 @@ export default function Home() {
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            <ProductCard title="Classic Nayab" price="Rs.2,999" image="/bottle-01.png" />
-            <ProductCard title="Royal Scent" price="Rs.3,500" image="/bottle-01.png" />
-            <ProductCard title="Azure Mist" price="Rs.5,650" image="/bottle-01.png" />
-            <ProductCard title="Velvet Oud" price="Rs.7,600" image="/bottle-01.png" />
+            {/* Pass prices instead of price */}
+            {PRODUCTS.map((product) => (
+              <ProductCard key={product.id} title={product.title} prices={product.prices} image={product.image} />
+            ))}
           </div>
           <div className="flex justify-center mt-16">
             <button className="px-10 py-3 hover:bg-gray-200 cursor-pointer hover:text-black text-white rounded-full font-bold uppercase tracking-widest text-sm bg-gray-800 transition-all shadow-lg hover:shadow-xl">
@@ -350,9 +348,9 @@ export default function Home() {
             <div className="flex-1 h-[1px] bg-gray-200" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <CollectionCard title="Best Perfumes For Men" image="/bottle-01.png" bgClass="bg-gray-300" />
-            <CollectionCard title="Best Perfumes For Women" image="/bottle-01.png" bgClass="bg-[#e4d3d3]" />
-            <CollectionCard title="Gift Box" image="/bottle-01.png" bgClass="bg-red-900" />
+            {COLLECTIONS.map((collection) => (
+               <CollectionCard key={collection.id} title={collection.title} image={collection.image} bgClass={collection.bgClass} />
+            ))}
           </div>
         </div>
       </section>

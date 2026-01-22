@@ -1,29 +1,7 @@
 "use client";
 import { useState } from "react";
-
-// --- Local Data for FAQs ---
-const PERFUME_FAQS = [
-  {
-    question: "How long does Nayab Scents perfume last?",
-    answer: "Our premium perfumes are formulated as Extrait de Parfum or High-Concentration EDP, designed to last typically 8-12 hours on skin and even longer on fabric, depending on environmental conditions."
-  },
-  {
-    question: "Are these original fragrances?",
-    answer: "Nayab Scents creates premium high-quality impressions and original blends using imported oils. We ensure 98% match with designer notes but with enhanced longevity."
-  },
-  {
-    question: "What is your return policy?",
-    answer: "We offer a 'Open Parcel' policy. You can check your parcel upon delivery. If the bottle is damaged or leaked, you can return it immediately to the rider."
-  },
-  {
-    question: "How should I store my perfume?",
-    answer: "To maintain the quality of your Nayab Scent, store the bottle in a cool, dry place away from direct sunlight and humidity. A wardrobe or dresser drawer is ideal."
-  },
-  {
-    question: "Do you offer testers or samples?",
-    answer: "Yes! We offer a 'Discovery Box' which contains 5 miniature bottles of our best-sellers so you can try them before committing to a full-size bottle."
-  }
-];
+// Import from database
+import { PERFUME_FAQS } from "@/database/data";
 
 export default function FAQSection() {
   const [showAll, setShowAll] = useState(false);

@@ -1,34 +1,8 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-
-// --- Local Data for Magazine ---
-const SCENT_ARTICLES = [
-  {
-    id: 1,
-    title: "The Art of Layering Fragrances",
-    category: "Guides",
-    date: "Oct 24, 2025",
-    image: "/bottle-01.png", // Using your existing image
-    content: "Layering perfumes is an art that allows you to create a truly unique signature scent. Start with a heavy base like Oud or Musk, and top it off with lighter citrus or floral notes to create depth and longevity."
-  },
-  {
-    id: 2,
-    title: "Why 'Nayab' Scents Last Longer",
-    category: "Behind the Scenes",
-    date: "Nov 02, 2025",
-    image: "/bottle-01.png", // Using your existing image
-    content: "Our formulation process involves a higher concentration of perfume oils compared to standard market fragrances. We steep our blends for weeks to ensure maturity and projection that lasts 12+ hours."
-  },
-  {
-    id: 3,
-    title: "Top 5 Winter Fragrances for 2026",
-    category: "Trends",
-    date: "Jan 15, 2026",
-    image: "/bottle-01.png", // Using your existing image
-    content: "As the temperature drops, warm and spicy notes take center stage. Discover our top picks featuring Amber, Vanilla, and Tobacco notes that provide a cozy yet sophisticated aura."
-  }
-];
+// Import from database
+import { SCENT_ARTICLES } from "@/database/data";
 
 export default function MagazineSection() {
   const [selectedArticle, setSelectedArticle] = useState<typeof SCENT_ARTICLES[0] | null>(null);
