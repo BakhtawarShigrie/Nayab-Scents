@@ -4,7 +4,8 @@ import { PRODUCTS } from "@/database/data";
 
 export default function TrendingSection() {
   return (
-    <section className="relative z-30 bg-white pb-14 pt-10 sm:pt-16 px-6 md:px-20">
+    // ID "trending" add kiya gaya hai
+    <section id="trending" className="relative z-30 bg-white pb-14 pt-10 sm:pt-16 px-6 md:px-20">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col items-center mb-12 md:mb-16">
           <div className="flex items-center w-full mb-6 md:mb-8">
@@ -21,7 +22,13 @@ export default function TrendingSection() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {PRODUCTS.map((product) => (
-            <ProductCard key={product.id} title={product.title} prices={product.prices} image={product.image} />
+            <ProductCard 
+              key={product.id} 
+              id={product.id} // <-- Cart functionality ke liye zaroori
+              title={product.title} 
+              prices={product.prices} 
+              image={product.image} 
+            />
           ))}
         </div>
         <div className="flex justify-center mt-16">

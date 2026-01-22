@@ -89,21 +89,21 @@ export default function Footer() {
         );
       case "Shipping":
         return (
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold uppercase">Shipping & Delivery</h3>
-            <div className="text-sm text-gray-600 leading-relaxed bg-blue-50 p-4 border border-blue-200 rounded-sm space-y-2">
-              <p>
-                Shipping charges are <span className="font-bold">Rs. 200</span> nationwide.
-              </p>
-              <p>
-                We offer Cash on Delivery (COD). For orders above Rs. 5000, a small advance payment may be required.
-              </p>
-              <p>
-                You will receive your delivery within <span className="font-bold">3 to 5 working days</span>.
-              </p>
-            </div>
-          </div>
-        );
+    <div className="space-y-4">
+      <h3 className="text-xl font-bold uppercase">Shipping & Delivery</h3>
+      <div className="text-sm text-gray-600 leading-relaxed bg-blue-50 p-4 border border-blue-200 rounded-sm space-y-2">
+        <p>
+          Shipping charges are <span className="font-bold">Rs. 250</span> nationwide.
+        </p>
+        <p>
+          We offer Cash on Delivery (COD). For orders above Rs. 5000, a small advance payment may be required.
+        </p>
+        <p>
+          You will receive your delivery within <span className="font-bold">3 to 5 working days</span>.
+        </p>
+      </div>
+    </div>
+  );
       case "Redeem":
         return (
           <div className="space-y-4 text-center">

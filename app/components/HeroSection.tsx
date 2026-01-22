@@ -23,6 +23,7 @@ export default function HeroSection() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // ... (Baaki saara animation logic same rahega) ...
   const heroProgress = Math.min(scrollProgress * 6.6, 1);
   const heroOpacity = 1 - heroProgress;
   
@@ -83,16 +84,7 @@ export default function HeroSection() {
             </div>
         </div>
 
-        <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-4 md:px-8 md:py-6">
-          <button className="text-white hover:opacity-80 transition-opacity p-1 mix-blend-difference">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 md:w-8 md:h-8">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-            </svg>
-          </button>
-          <button className="rounded-full border border-white/30 bg-black/20 backdrop-blur-sm px-4 py-1.5 md:px-6 md:py-2 text-xs md:text-sm font-medium text-white transition-all hover:bg-white hover:text-black">
-            Order Now
-          </button>
-        </nav>
+        {/* --- PURANA NAV REMOVED FROM HERE --- */}
 
         <div 
           className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 transition-transform duration-75 ease-linear will-change-transform z-10"
