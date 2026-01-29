@@ -57,13 +57,13 @@ export default function CheckoutPage() {
   };
 
   return (
-    // FIX 1: Padding Top increased to pt-32 for mobile navbar clearance
     <div className="bg-white min-h-screen pt-32 pb-20 text-black">
       <div className="container mx-auto px-4 max-w-6xl">
         <h1 className="text-3xl md:text-5xl font-bold text-center mb-12 font-serif text-black">Checkout</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           
+          {/* --- LEFT SIDE: CART EDITABLE ITEMS --- */}
           <div className="md:col-span-2 space-y-6">
             <div className="bg-gray-50 p-4 md:p-6 rounded-lg border border-gray-300">
               <h2 className="text-lg md:text-xl font-bold mb-6 uppercase tracking-wider text-black">Order Summary</h2>
@@ -72,10 +72,9 @@ export default function CheckoutPage() {
                 <p className="text-gray-800 font-medium">Your cart is empty. <Link href="/" className="underline text-black font-bold">Go Shopping</Link></p>
               ) : (
                 cart.map((item) => (
-                  // FIX 2: Layout changed to always Row (flex-row) & reduced gaps
                   <div key={`${item.id}-${item.selectedSize}`} className="flex flex-row items-start gap-4 border-b border-gray-300 last:border-0 pb-4 mb-4 last:mb-0">
                     
-                    {/* Image Size: Mobile (w-20) -> Desktop (w-32) */}
+                    {/* Image */}
                     <div className="relative w-20 h-20 md:w-32 md:h-32 bg-white rounded-md border border-gray-200 flex-shrink-0">
                       <Image src={item.image} alt={item.title} fill className="object-contain p-2" />
                     </div>
@@ -86,7 +85,7 @@ export default function CheckoutPage() {
                         <p className="text-sm md:text-lg font-bold text-[#1a2b5a] ml-2 whitespace-nowrap">{item.price}</p>
                       </div>
                       
-                      {/* Controls Compact Layout */}
+                      {/* Controls */}
                       <div className="flex flex-col gap-2 mt-2">
                         {/* Size Selector */}
                         <div className="flex items-center gap-2">
@@ -137,10 +136,29 @@ export default function CheckoutPage() {
             </div>
           </div>
 
+          {/* --- RIGHT SIDE: PAYMENT DETAILS (Fixed) --- */}
           <div className="md:col-span-1">
             <div className="bg-black text-white p-6 md:p-8 rounded-lg shadow-xl sticky top-24">
               <h2 className="text-xl font-bold mb-6 uppercase tracking-wider border-b border-gray-700 pb-4">Payment Details</h2>
               
+              {/* === NEW ADDITION: Product List in Payment Details === */}
+              {cart.length > 0 && (
+                <div className="mb-6 space-y-3 border-b border-gray-700 pb-6">
+                  {cart.map((item) => (
+                    <div key={`summary-${item.id}-${item.selectedSize}`} className="flex justify-between items-start text-sm">
+                      <div className="text-gray-300 w-2/3">
+                        {item.title} 
+                        <span className="text-xs text-gray-500 block">({item.selectedSize})</span>
+                      </div>
+                      <div className="font-bold text-white">
+                        x {item.quantity}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {/* =================================================== */}
+
               <div className="space-y-4 mb-8 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-300 font-medium">Subtotal</span>
