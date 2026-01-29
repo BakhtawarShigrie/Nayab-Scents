@@ -1,94 +1,81 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 export default function HeroSection() {
-  const [scrollProgress, setScrollProgress] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!containerRef.current) return;
-      const containerTop = containerRef.current.getBoundingClientRect().top;
-      const containerHeight = containerRef.current.offsetHeight; 
-      const windowHeight = window.innerHeight;
-      const scrollTop = -containerTop; 
-      const scrollableDistance = containerHeight - windowHeight;
-      let progress = scrollTop / scrollableDistance;
-      progress = Math.min(Math.max(progress, 0), 1);
-      setScrollProgress(progress);
-    };
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); 
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  // Optimized Scroll Tracking (Direct GPU)
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
 
-  // ... (Baaki saara animation logic same rahega) ...
-  const heroProgress = Math.min(scrollProgress * 6.6, 1);
-  const heroOpacity = 1 - heroProgress;
+  // --- 1. Hero Text Animations (0 -> 0.15) ---
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+  const heroY = useTransform(scrollYProgress, [0, 0.15], ["0px", "-50px"]);
   
-  let bottleEntry = 0;
-  if (scrollProgress > 0.1) {
-    bottleEntry = Math.min((scrollProgress - 0.1) * 6.6, 1);
-  }
+  // --- 2. Bottle Entry (0.1 -> 0.25) ---
+  // Iska use hum scale calculation mein karenge
+  const bottleEntry = useTransform(scrollYProgress, [0.1, 0.25], [0, 1]);
 
-  let splitProgress = 0;
-  if (scrollProgress > 0.25) {
-    splitProgress = Math.min((scrollProgress - 0.25) * 5, 1);
-  }
+  // --- 3. Opacity Logic (Fixed: Hidden at Start) ---
+  // 0 -> 0.1: Hidden (0)
+  // 0.1 -> 0.25: Fade In (0 -> 1)
+  // 0.25 -> 0.85: Stay Visible (1)
+  // 0.85 -> 1.0: Fade Out (1 -> 0)
+  const bottleFinalOpacity = useTransform(scrollYProgress, [0, 0.1, 0.25, 0.85, 1], [0, 0, 1, 1, 0]);
 
-  let recenterProgress = 0;
-  if (scrollProgress > 0.45) {
-    recenterProgress = Math.min((scrollProgress - 0.45) * 6.6, 1);
-  }
-  const effectiveSplit = splitProgress * (1 - recenterProgress);
+  // --- 4. Split & Recenter Logic (0.25 -> 0.45 -> 0.6) ---
+  // Bottle move hoti hai aur phir wapis aati hai
+  const effectiveSplit = useTransform(scrollYProgress, [0.25, 0.45, 0.6], [0, 1, 0]);
 
-  let zoomProgress = 0;
-  if (scrollProgress > 0.6) {
-    zoomProgress = Math.min((scrollProgress - 0.6) * 4, 1);
-  }
-  const baseScale = 0.8 + (0.2 * bottleEntry);
+  // Text Exit Opacity
+  const textExitOpacity = useTransform(scrollYProgress, [0.45, 0.6], [1, 0]);
 
-  let vanishProgress = 0;
-  if (scrollProgress > 0.85) {
-    vanishProgress = Math.min((scrollProgress - 0.85) * 6.6, 1);
-  }
-  const bottleFinalOpacity = bottleEntry * (1 - vanishProgress);
-  const bottleBlur = vanishProgress * 20;
+  // --- 5. Zoom Logic (0.6 -> 0.85) ---
+  const zoomProgress = useTransform(scrollYProgress, [0.6, 0.85], [0, 1]);
 
-  const bgScale = 1 + (scrollProgress * 0.25);
-  const bgBlur = scrollProgress * 10;
-  const bgOpacity = 1 - vanishProgress; 
+  // --- 6. Vanish Logic (Blur & BG) ---
+  const vanishProgress = useTransform(scrollYProgress, [0.85, 1], [0, 1]);
+  const bottleBlur = useTransform(vanishProgress, [0, 1], ["0px", "20px"]);
+  const bgOpacity = useTransform(vanishProgress, [0, 1], [1, 0]);
+
+  // Background Scale & Blur
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1, 1.25]);
+  const bgBlur = useTransform(scrollYProgress, [0, 1], ["0px", "10px"]);
 
   return (
-    <div 
-      ref={containerRef} 
-      className="relative h-[500vh]"
-      style={{
-        ['--hero-opacity' as any]: heroOpacity,
-        ['--hero-y' as any]: `${heroProgress * -50}px`,
-        ['--base-scale' as any]: baseScale,
-        ['--zoom-progress' as any]: zoomProgress,
-        ['--bottle-opacity' as any]: bottleFinalOpacity,
-        ['--bottle-blur' as any]: `${bottleBlur}px`,
-        ['--split-progress' as any]: effectiveSplit,
-        ['--text-exit-opacity' as any]: 1 - recenterProgress,
-        ['--bg-opacity' as any]: bgOpacity,
-      } as React.CSSProperties}
-    >
+    <div ref={containerRef} className="relative h-[500vh]">
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
-        <div className="absolute inset-0 z-0 bg-black pointer-events-none" style={{ opacity: 'var(--bg-opacity)' }}>
-            <div className="relative w-full h-full" style={{ transform: `scale(${bgScale})`, filter: `blur(${bgBlur}px)` }}>
-              <Image src="/Dcover-01.webp" alt="Background" fill priority className="object-cover opacity-60" />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80" />
-            </div>
-        </div>
+        
+        {/* --- BACKGROUND --- */}
+        <motion.div 
+          className="absolute inset-0 z-0 bg-black pointer-events-none"
+          style={{ opacity: bgOpacity }}
+        >
+          <motion.div 
+            className="relative w-full h-full"
+            style={{ 
+              scale: bgScale, 
+              filter: useTransform(bgBlur, (v) => `blur(${v})`) 
+            }}
+          >
+            <Image src="/Dcover-01.webp" alt="Background" fill priority className="object-cover opacity-60" />
+            {/* Gradient */}
+            <div className="absolute inset-0 bg-linear-to-b from-black/40 via-transparent to-black/80" />
+          </motion.div>
+        </motion.div>
 
-        {/* --- PURANA NAV REMOVED FROM HERE --- */}
-
-        <div 
-          className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 transition-transform duration-75 ease-linear will-change-transform z-10"
-          style={{ opacity: 'var(--hero-opacity)', transform: 'translateY(var(--hero-y))', pointerEvents: heroOpacity <= 0 ? 'none' : 'auto' }}
+        {/* --- HERO TEXT (Initial) --- */}
+        <motion.div 
+          className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 z-10"
+          style={{ 
+            opacity: heroOpacity, 
+            y: heroY,
+            pointerEvents: useTransform(scrollYProgress, (v) => v > 0.15 ? 'none' : 'auto')
+          }}
         >
           <h1 className="text-4xl md:text-7xl font-bold tracking-tight mb-4 drop-shadow-xl leading-tight text-white">
             Unforgettable Scents,<br />Lasting Presence
@@ -99,23 +86,45 @@ export default function HeroSection() {
           <button className="rounded-full border border-white/50 bg-white/10 backdrop-blur-md px-6 py-2.5 md:px-8 md:py-3 font-semibold transition-all hover:bg-white hover:text-black text-white">
             Order Now
           </button>
-        </div>
+        </motion.div>
 
-        <div 
-          className="absolute z-20 transition-transform duration-75 ease-linear will-change-transform [--zoom-factor:1.5] md:[--zoom-factor:0.5]"
-          style={{ opacity: 'var(--bottle-opacity)', filter: 'blur(var(--bottle-blur))', transform: `scale(calc(var(--base-scale) + (var(--zoom-progress) * var(--zoom-factor)))) translateX(0)` }}
+        {/* --- BOTTLE ANIMATION CONTAINER --- */}
+        {/* CSS Variables pass kar rahe hain taake responsive positioning (Tailwind/Calc) kaam kare */}
+        <motion.div 
+          className="absolute z-20 will-change-transform [--zoom-factor:1.5] md:[--zoom-factor:0.5]"
+          style={{ 
+            opacity: bottleFinalOpacity, // Updated Logic: Hidden at start
+            filter: useTransform(bottleBlur, (v) => `blur(${v})`),
+            // Motion Values passed as CSS vars
+            '--base-scale': useTransform(bottleEntry, (v) => 0.8 + (0.2 * v)),
+            '--zoom-progress': zoomProgress,
+            '--split-progress': effectiveSplit,
+            // Original Transform logic using CSS calc()
+            transform: `scale(calc(var(--base-scale) + (var(--zoom-progress) * var(--zoom-factor)))) translateX(0)`
+          } as any}
         >
+          {/* Bottle Movement Logic (Responsive: Vertical on Mobile, Horizontal on Desktop) */}
           <div className="transform transition-transform duration-75 ease-linear translate-y-[calc(var(--split-progress)*25vh)] md:translate-y-0 md:translate-x-[calc(var(--split-progress)*25vw)]">
               <div className="relative w-[50vw] h-[50vh] md:w-[25vw] md:h-[70vh]">
               <div className="absolute inset-0 bg-green-600 rounded-full blur-3xl opacity-20 animate-pulse"></div>
               <Image src="/bottle-01.png" alt="Green Water Bottle" fill className="object-contain drop-shadow-2xl filter brightness-110" priority />
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="absolute inset-0 flex flex-col pointer-events-none z-10" style={{ opacity: 'var(--text-exit-opacity)' }}>
+        {/* --- SPLIT TEXT SECTION (Elevate Your Scent) --- */}
+        <motion.div 
+          className="absolute inset-0 flex flex-col pointer-events-none z-10" 
+          style={{ opacity: textExitOpacity }}
+        >
           <div className="flex-1 flex items-start justify-center pt-24 md:pt-0 md:items-center md:justify-start px-6 md:px-24">
-            <div className="max-w-md md:max-w-lg text-center md:text-left transition-all duration-75 ease-linear" style={{ opacity: 'var(--split-progress)' }}>
+            <motion.div 
+              className="max-w-md md:max-w-lg text-center md:text-left" 
+              style={{ 
+                opacity: effectiveSplit,
+                '--split-progress': effectiveSplit,
+              } as any}
+            >
               <div className="transform transition-transform duration-75 ease-linear translate-y-[calc((1-var(--split-progress))*-20px)] md:translate-y-0 md:translate-x-[calc((1-var(--split-progress))*-50px)]">
                 <h2 className="text-3xl md:text-6xl font-bold mb-4 leading-tight drop-shadow-lg text-white">
                   Elevate Your <br />
@@ -128,9 +137,10 @@ export default function HeroSection() {
                   Order Now
                 </button>
               </div>
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
+
       </div>
     </div>
   );
