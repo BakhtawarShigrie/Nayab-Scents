@@ -3,9 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
-import { WishlistProvider } from "./context/WishlistContext"; // Import WishlistProvider
-import CartSidebar from "./components/CartSidebar";
+import { WishlistProvider } from "./context/WishlistContext";
 import Navbar from "./components/Navbar";
+import CartSidebar from "./components/CartSidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,6 +20,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Nayab Scents",
   description: "Premium Long-Lasting Fragrances",
+  icons: {
+    icon: "/logo.svg", // Using logo.svg as favicon
+  },
 };
 
 export default function RootLayout({
@@ -31,7 +34,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider>
-          <WishlistProvider> {/* Wrap with WishlistProvider */}
+          <WishlistProvider>
             <CartProvider>
               <Navbar />
               {children}
