@@ -145,8 +145,8 @@ export default function Navbar() {
             </svg>
           </button>
 
-          {/* Logo Updated: Small on Mobile (text-sm), Large on Desktop (md:text-xl), No Wrap */}
-          <Link href="/" className="font-serif text-sm md:text-xl font-bold tracking-widest uppercase hover:opacity-80 transition-opacity whitespace-nowrap">
+          {/* Logo Size Restored: text-lg on mobile, text-xl on desktop */}
+          <Link href="/" className="font-serif text-lg md:text-xl font-bold tracking-widest uppercase hover:opacity-80 transition-opacity whitespace-nowrap">
             Nayab Scents
           </Link>
         </div>
