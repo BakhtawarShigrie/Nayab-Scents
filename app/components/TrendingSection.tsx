@@ -1,10 +1,13 @@
 "use client";
 import ProductCard from "./ProductCard";
 import { PRODUCTS } from "@/database/data";
+import Link from "next/link"; // Link Import kiya
 
 export default function TrendingSection() {
+  // Sirf pehle 4 products dikhane ke liye slice logic
+  const displayedProducts = PRODUCTS.slice(0, 4);
+
   return (
-    // ID "trending" add kiya gaya hai
     <section id="trending" className="relative z-30 bg-white pb-14 pt-10 sm:pt-16 px-6 md:px-20">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col items-center mb-12 md:mb-16">
@@ -20,21 +23,27 @@ export default function TrendingSection() {
             <button className="px-6 py-2 md:px-8 md:py-2.5 border-2 border-gray-100 text-gray-400 rounded-full text-xs md:text-sm font-bold uppercase tracking-widest hover:border-black hover:text-black transition-all">Unisex</button>
           </div>
         </div>
+        
+        {/* Grid View */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-          {PRODUCTS.map((product) => (
+          {displayedProducts.map((product) => (
             <ProductCard 
               key={product.id} 
-              id={product.id} // <-- Cart functionality ke liye zaroori
+              id={product.id}
               title={product.title} 
               prices={product.prices} 
               image={product.image} 
             />
           ))}
         </div>
+
+        {/* Show More Button Linked to /products */}
         <div className="flex justify-center mt-16">
-          <button className="px-10 py-3 hover:bg-gray-200 cursor-pointer hover:text-black text-white rounded-full font-bold uppercase tracking-widest text-sm bg-gray-800 transition-all shadow-lg hover:shadow-xl">
-            Show More
-          </button>
+          <Link href="/products">
+            <button className="px-10 py-3 hover:bg-gray-200 cursor-pointer hover:text-black text-white rounded-full font-bold uppercase tracking-widest text-sm bg-gray-800 transition-all shadow-lg hover:shadow-xl">
+              Show More
+            </button>
+          </Link>
         </div>
       </div>
     </section>

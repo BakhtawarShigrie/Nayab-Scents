@@ -1,6 +1,5 @@
 // database/data.tsx
 
-// ... (CATEGORIES same rahein)
 export const CATEGORIES = [
   { name: "Woody", image: "/bottle-01.png" },
   { name: "Floral", image: "/bottle-01.png" },
@@ -10,19 +9,15 @@ export const CATEGORIES = [
   { name: "Musk", image: "/bottle-01.png" },
 ];
 
-// --- ADDED WHATSAPP NUMBER ---
-export const WHATSAPP_NUMBER = "923176402959"; // Your WhatsApp number without '+' or spaces
-
-// --- 2. Products (Updated with Dynamic Prices) ---
 export const PRODUCTS = [
   { 
     id: 1, 
     title: "Classic Nayab", 
-    // Ab prices object hai
     prices: { "30 ml": "Rs.2,999", "50 ml": "Rs.4,500", "100 ml": "Rs.8,000" }, 
     image: "/bottle-01.png", 
     category: "Woody", 
-    gender: "Men" 
+    gender: "Men",
+    stock: 734 // Random stock 500-1000
   },
   { 
     id: 2, 
@@ -30,7 +25,8 @@ export const PRODUCTS = [
     prices: { "30 ml": "Rs.3,500", "50 ml": "Rs.5,200", "100 ml": "Rs.9,500" },
     image: "/bottle-01.png", 
     category: "Floral", 
-    gender: "Women" 
+    gender: "Women",
+    stock: 912 
   },
   { 
     id: 3, 
@@ -38,7 +34,8 @@ export const PRODUCTS = [
     prices: { "30 ml": "Rs.5,650", "50 ml": "Rs.8,500", "100 ml": "Rs.15,000" },
     image: "/bottle-01.png", 
     category: "Fresh", 
-    gender: "Unisex" 
+    gender: "Unisex",
+    stock: 567 
   },
   { 
     id: 4, 
@@ -46,11 +43,20 @@ export const PRODUCTS = [
     prices: { "30 ml": "Rs.7,600", "50 ml": "Rs.11,000", "100 ml": "Rs.20,000" },
     image: "/bottle-01.png", 
     category: "Oriental", 
-    gender: "Unisex" 
+    gender: "Unisex",
+    stock: 889 
+  },
+  { 
+    id: 5, 
+    title: "Mystic Musk", 
+    prices: { "30 ml": "Rs.3,200", "50 ml": "Rs.4,800", "100 ml": "Rs.8,500" },
+    image: "/bottle-01.png", 
+    category: "Musk", 
+    gender: "Unisex",
+    stock: 645 
   },
 ];
 
-// ... (COLLECTIONS, SCENT_ARTICLES, PERFUME_FAQS same rahein)
 export const COLLECTIONS = [
   { id: 1, title: "Best Perfumes For Men", image: "/bottle-01.png", bgClass: "bg-gray-300" },
   { id: 2, title: "Best Perfumes For Women", image: "/bottle-01.png", bgClass: "bg-[#e4d3d3]" },
@@ -106,3 +112,5 @@ export const PERFUME_FAQS = [
     answer: "Yes! We offer a 'Discovery Box' which contains 5 miniature bottles of our best-sellers so you can try them before committing to a full-size bottle."
   }
 ];
+
+export const WHATSAPP_NUMBER = "923176402959";
