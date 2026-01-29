@@ -3,18 +3,17 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useCart } from "@/app/context/CartContext";
 import { useAuth } from "@/app/context/AuthContext";
-import { useWishlist } from "@/app/context/WishlistContext"; // Import Wishlist Hook
+import { useWishlist } from "@/app/context/WishlistContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const { toggleCart, cart } = useCart();
   const { user, logout } = useAuth();
-  const { wishlist } = useWishlist(); // Wishlist Count ke liye
+  const { wishlist } = useWishlist(); 
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   
-  // --- POPUP STATES ---
   const [popupData, setPopupData] = useState<{ title: string; content: React.ReactNode } | null>(null);
   const [copied, setCopied] = useState(false); 
 
@@ -146,7 +145,8 @@ export default function Navbar() {
             </svg>
           </button>
 
-          <Link href="/" className="font-serif text-lg md:text-xl font-bold tracking-widest uppercase hover:opacity-80 transition-opacity">
+          {/* Logo Hidden on Mobile (hidden md:block) */}
+          <Link href="/" className="hidden md:block font-serif text-lg md:text-xl font-bold tracking-widest uppercase hover:opacity-80 transition-opacity">
             Nayab Scents
           </Link>
         </div>
@@ -194,7 +194,7 @@ export default function Navbar() {
             </Link>
           )}
 
-          {/* 2. WISHLIST ICON (Newly Added) */}
+          {/* 2. WISHLIST ICON */}
           <Link href="/wishlist" className="relative hover:opacity-70 transition-opacity">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
