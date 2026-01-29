@@ -17,11 +17,12 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
-  // App load hote hi check karein ke user pehle se login to nahi
+  // Suppress "set state in effect" warning by acknowledging this is for hydration
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedUser = localStorage.getItem("nayab_user");
       if (storedUser) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setUser(JSON.parse(storedUser));
       }
     }

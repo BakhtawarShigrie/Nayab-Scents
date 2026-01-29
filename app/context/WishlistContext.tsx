@@ -18,6 +18,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     if (typeof window !== "undefined") {
       const storedWishlist = localStorage.getItem("nayab_wishlist");
       if (storedWishlist) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setWishlist(JSON.parse(storedWishlist));
       }
     }
@@ -25,7 +26,11 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
 
   // Save to Local Storage whenever wishlist changes
   useEffect(() => {
-    localStorage.setItem("nayab_wishlist", JSON.stringify(wishlist));
+    // Only save if wishlist has been initialized (to prevent overwriting with empty array on first render)
+    // But since we set initial state [], it's fine for new users.
+    if (typeof window !== "undefined") {
+         localStorage.setItem("nayab_wishlist", JSON.stringify(wishlist));
+    }
   }, [wishlist]);
 
   const addToWishlist = (id: number) => {

@@ -1,10 +1,10 @@
 "use client";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, use, useCallback } from "react";
 import Image from "next/image";
 import { PRODUCTS } from "@/database/data";
 import { getReviewsForProduct, Review } from "@/database/reviews";
 import { useCart } from "@/app/context/CartContext";
-import { useAuth } from "@/app/context/AuthContext"; // Use Auth
+import { useAuth } from "@/app/context/AuthContext"; 
 import { useRouter } from "next/navigation";
 import ProductCard from "@/app/components/ProductCard";
 import Footer from "@/app/components/Footer";
@@ -22,7 +22,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const product = PRODUCTS.find((p) => p.id === productId);
   
   const { addToCart } = useCart();
-  const { user } = useAuth(); // Get Logged In User
+  const { user } = useAuth(); 
 
   // --- States ---
   const [selectedSize, setSelectedSize] = useState("50 ml");
@@ -35,7 +35,27 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   // User Review Form State
   const [userReview, setUserReview] = useState({ rating: 5, comment: "" });
   const [isReviewSubmitted, setIsReviewSubmitted] = useState(false);
-  const [showLoginPopup, setShowLoginPopup] = useState(false); // For Login Modal
+  const [showLoginPopup, setShowLoginPopup] = useState(false); 
+
+  // --- Helper to Submit Review (Moved Up & Wrapped in useCallback) ---
+  const submitReview = useCallback((comment: string, rating: number) => {
+    const newReview: Review = {
+      id: `user-${Date.now()}`,
+      name: user?.name || "Anonymous", 
+      rating: rating,
+      comment: comment,
+      date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+    };
+
+    localStorage.setItem(`review_product_${productId}`, JSON.stringify(newReview));
+    
+    // Functional update to avoid dependency on reviewsList
+    setReviewsList(prev => {
+        const filtered = prev.filter(r => !r.id.startsWith('user-'));
+        return [newReview, ...filtered];
+    });
+    setIsReviewSubmitted(true);
+  }, [productId, user]);
 
   // --- Initial Data Loading ---
   useEffect(() => {
@@ -53,8 +73,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     const storedReview = localStorage.getItem(`review_product_${productId}`);
     if (storedReview) {
       const parsedReview = JSON.parse(storedReview);
-      // Agar user login hai, to hum check karte hain ke kya yeh uska review hai
-      // Filhal simple rakhte hain, sab ko apna saved review nazar aaye
       setUserReview({ rating: parsedReview.rating, comment: parsedReview.comment });
       setIsReviewSubmitted(true);
       setReviewsList([parsedReview, ...dummyReviews]);
@@ -67,34 +85,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     if (user && draftReview) {
       const parsedDraft = JSON.parse(draftReview);
       setUserReview(parsedDraft);
-      // Submit immediately
       submitReview(parsedDraft.comment, parsedDraft.rating);
-      localStorage.removeItem(`draft_review_${productId}`); // Clear draft
+      localStorage.removeItem(`draft_review_${productId}`); 
     }
 
-  }, [productId, product, user]); // Added user dependency
+  }, [productId, product, user, submitReview]); // submitReview added to dependencies
 
   if (!product) {
     return <div className="text-center pt-40 text-black">Product not found</div>;
   }
-
-  // --- Helper to Submit Review ---
-  const submitReview = (comment: string, rating: number) => {
-    const newReview: Review = {
-      id: `user-${Date.now()}`,
-      name: user?.name || "Anonymous", // Use logged in name
-      rating: rating,
-      comment: comment,
-      date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-    };
-
-    localStorage.setItem(`review_product_${productId}`, JSON.stringify(newReview));
-    
-    // Update List
-    const filteredList = reviewsList.filter(r => !r.id.startsWith('user-'));
-    setReviewsList([newReview, ...filteredList]);
-    setIsReviewSubmitted(true);
-  };
 
   const handleReviewSubmit = () => {
     if (!userReview.comment) {
@@ -102,9 +101,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       return;
     }
 
-    // CHECK LOGIN
     if (!user) {
-      // Save Draft
       localStorage.setItem(`draft_review_${productId}`, JSON.stringify(userReview));
       setShowLoginPopup(true);
       return;
@@ -126,18 +123,18 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   };
 
   // --- Handlers for Cart & Pricing ---
-  const currentPrice = product.prices[selectedSize];
+  const currentPrice = product.prices[selectedSize as keyof typeof product.prices];
+  
   const originalPriceNum = parseInt(currentPrice.replace(/[^0-9]/g, "")) * 1.2; 
   const originalPrice = `Rs. ${Math.round(originalPriceNum).toLocaleString()}`;
   const relatedProducts = PRODUCTS.filter((p) => p.id !== productId).slice(0, 4);
+  
   const handleAddToCart = () => { addToCart(product, selectedSize); };
 
   return (
     <div className="bg-[#fcfcfc] min-h-screen pt-32 text-black flex flex-col justify-between relative">
       <div className="container mx-auto px-4 max-w-6xl pb-20">
         
-        {/* ... (Product Images & Details Section Same as Before) ... */}
-        {/* COPY PREVIOUS CODE FOR GRID & DETAILS HERE OR KEEP IT AS IS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 mb-20">
           <div className="relative bg-gray-100 rounded-lg overflow-hidden aspect-square md:aspect-[3/4] border border-gray-200 group">
             <Image src={product.image} alt={product.title} fill className="object-contain p-10 group-hover:scale-110 transition-transform duration-700 cursor-zoom-in" />
@@ -204,7 +201,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         </div>
                         <p className="text-[10px] text-gray-400">{review.date}</p>
                       </div>
-                      <p className="text-sm text-gray-700 italic">"{review.comment}"</p>
+                      {/* Fixed Quotes here */}
+                      <p className="text-sm text-gray-700 italic">&quot;{review.comment}&quot;</p>
                     </div>
                   </SwiperSlide>
                 ))}
@@ -213,13 +211,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           </div>
         </div>
 
-        {/* --- WRITE A REVIEW (With Login Check) --- */}
+        {/* --- WRITE A REVIEW --- */}
         <div className="bg-white border border-gray-200 rounded-lg p-8 mb-20 shadow-md">
           <h2 className="text-2xl font-bold font-serif text-black mb-6 uppercase tracking-wider text-center">Write a Review</h2>
           {!isReviewSubmitted ? (
             <div className="flex flex-col gap-4 max-w-2xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Name removed from input as it comes from Login now */}
                 <div className="border border-gray-300 p-3 rounded text-sm text-gray-500 bg-gray-100 flex items-center">
                   {user ? user.name : "Please Login to Review"}
                 </div>
@@ -242,7 +239,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               <div className="bg-white p-4 rounded border border-green-100 max-w-lg mx-auto text-left mb-4">
                  <p className="font-bold text-black">{user?.name || "You"}</p>
                  <div className="flex text-[#D4B07B] text-sm my-1">{Array(userReview.rating).fill(0).map((_, i) => <span key={i}>★</span>)}</div>
-                 <p className="text-gray-700 text-sm">"{userReview.comment}"</p>
+                 {/* Fixed Quotes here */}
+                 <p className="text-gray-700 text-sm">&quot;{userReview.comment}&quot;</p>
               </div>
               <div className="flex gap-4 justify-center">
                 <button onClick={handleEditReview} className="text-xs font-bold uppercase underline hover:text-black text-gray-500">Edit</button>
@@ -255,9 +253,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         {/* --- You May Also Like --- */}
         <div className="mt-20">
           <div className="flex items-center w-full mb-10">
-            <div className="flex-1 h-[1px] bg-gray-200" />
+            {/* Tailwind Canonical Class Fix: h-px */}
+            <div className="flex-1 h-px bg-gray-200" />
             <h2 className="text-2xl md:text-5xl font-bold text-black px-4 md:px-8 tracking-tight uppercase text-center whitespace-nowrap font-serif">You May Also Like</h2>
-            <div className="flex-1 h-[1px] bg-gray-200" />
+            <div className="flex-1 h-px bg-gray-200" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
             {relatedProducts.map((p) => (
