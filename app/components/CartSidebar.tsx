@@ -31,7 +31,7 @@ export default function CartSidebar() {
               <h2 className="text-xl font-bold font-serif uppercase tracking-wider text-black">
                 Your Cart ({cart.length})
               </h2>
-              <button onClick={toggleCart} className="text-black hover:text-gray-700">
+              <button onClick={toggleCart} className="text-black cursor-pointer hover:text-gray-700">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
@@ -66,7 +66,7 @@ export default function CartSidebar() {
                           value={item.selectedSize}
                           // UPDATE: Pass 'item.selectedSize' (oldSize)
                           onChange={(e) => updateSize(item.id, item.selectedSize, e.target.value)}
-                          className="text-xs border border-gray-400 rounded px-2 py-1 bg-white text-black focus:outline-none focus:border-black font-medium"
+                          className="text-xs border cursor-pointer border-gray-400 rounded px-2 py-1 bg-white text-black focus:outline-none focus:border-black font-medium"
                         >
                           <option value="30 ml">30 ml</option>
                           <option value="50 ml">50 ml</option>
@@ -79,7 +79,7 @@ export default function CartSidebar() {
                           <button 
                             // UPDATE: Pass 'item.selectedSize'
                             onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity - 1)}
-                            className="px-2 py-1 text-black hover:bg-gray-200 border-r border-gray-300 disabled:opacity-50"
+                            className="px-2 cursor-pointer py-1 text-black hover:bg-gray-200 border-r border-gray-300 disabled:opacity-50"
                             disabled={item.quantity <= 1}
                           >
                             -
@@ -88,7 +88,7 @@ export default function CartSidebar() {
                           <button 
                             // UPDATE: Pass 'item.selectedSize'
                             onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity + 1)}
-                            className="px-2 py-1 text-black hover:bg-gray-200 border-l border-gray-300"
+                            className="px-2 py-1 cursor-pointer text-black hover:bg-gray-200 border-l border-gray-300"
                           >
                             +
                           </button>
@@ -97,7 +97,7 @@ export default function CartSidebar() {
                         <button
                           // UPDATE: Pass 'item.selectedSize'
                           onClick={() => removeFromCart(item.id, item.selectedSize)}
-                          className="text-xs text-red-600 hover:text-red-800 font-bold underline"
+                          className="text-xs cursor-pointer text-red-600 hover:text-red-800 font-bold underline"
                         >
                           Remove
                         </button>
@@ -117,7 +117,7 @@ export default function CartSidebar() {
                   </span>
                 </div>
                 <Link href="/checkout">
-                  <button onClick={toggleCart} className="w-full bg-black text-white py-4 font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors border border-black">
+                  <button onClick={toggleCart} className="w-full cursor-pointer bg-black text-white py-4 font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors border border-black">
                     Checkout
                   </button>
                 </Link>

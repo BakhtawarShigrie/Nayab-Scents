@@ -139,8 +139,8 @@ export default function Navbar() {
         
         {/* LEFT: Menu Button & Logo */}
         <div className="flex items-center gap-4 md:gap-6">
-          <button onClick={toggleMenu} className="hover:opacity-70 transition-opacity">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
+          <button onClick={toggleMenu} className="cursor-pointer hover:opacity-70 transition-opacity">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 cursor-pointer h-8">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
           </button>
@@ -172,12 +172,12 @@ export default function Navbar() {
                     exit={{ opacity: 0, y: 10 }}
                     className="absolute right-0 mt-3 w-32 bg-white text-black shadow-xl rounded-md overflow-hidden border border-gray-100"
                   >
-                    <div className="px-4 py-2 text-[10px] text-gray-500 border-b border-gray-100">
-                      Signed in as <br/> <span className="font-bold text-black">{user.name}</span>
+                    <div className="px-4 py-2 text-[10px] cursor-pointer text-gray-500 border-b border-gray-100">
+                      Signed in as <br/> <span className="font-bold cursor-pointer text-black">{user.name}</span>
                     </div>
                     <button 
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-3 text-xs font-bold uppercase hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-2"
+                      className="w-full text-left cursor-pointer px-4 py-3 text-xs font-bold uppercase hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-2"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12" /></svg>
                       Logout
@@ -207,7 +207,7 @@ export default function Navbar() {
           </Link>
 
           {/* 3. CART ICON */}
-          <button onClick={toggleCart} className="relative hover:opacity-70 transition-opacity">
+          <button onClick={toggleCart} className="relative cursor-pointer hover:opacity-70 transition-opacity">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
             </svg>
@@ -272,20 +272,20 @@ export default function Navbar() {
               </div>
 
               {/* Fixed Bottom: Login/Logout & Socials */}
-              <div className="border-t border-gray-200 bg-gray-50">
+              <div className="border-t  border-gray-200 bg-gray-50">
                 {user ? (
                   <div className="w-full bg-black text-white py-4 px-6 flex justify-between items-center">
                     <span className="font-bold text-sm truncate">Hi, {user.name.split(" ")[0]}</span>
                     <button 
                       onClick={handleLogout} 
-                      className="text-xs font-bold uppercase tracking-widest hover:text-red-400 flex items-center gap-2 border border-white/20 px-3 py-1.5 rounded-full hover:border-red-400 transition-colors"
+                      className="text-xs cursor-pointer font-bold uppercase tracking-widest hover:text-red-400 flex items-center gap-2 border border-white/20 px-3 py-1.5 rounded-full hover:border-red-400 transition-colors"
                     >
                       Logout
                     </button>
                   </div>
                 ) : (
                   <Link href="/login" onClick={toggleMenu}>
-                    <button className="w-full bg-black text-white py-4 font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors">
+                    <button className="w-full cursor-pointer bg-black text-white py-4 font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors">
                       Login / Register
                     </button>
                   </Link>
