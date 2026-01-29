@@ -2,6 +2,17 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { PRODUCTS } from "@/database/data";
 
+// --- Types Define Karein (Fixed: Removed 'any') ---
+interface Product {
+  id: number;
+  title: string;
+  image: string;
+  // Prices ab strictly string-key object hai, 'any' hata diya
+  prices: { [key: string]: string };
+  category?: string;
+  gender?: string;
+}
+
 interface CartItem {
   id: number;
   title: string;
@@ -14,7 +25,7 @@ interface CartItem {
 interface CartContextType {
   cart: CartItem[];
   isCartOpen: boolean;
-  addToCart: (product: any, size: string) => void;
+  addToCart: (product: Product, size: string) => void;
   removeFromCart: (productId: number, size: string) => void;
   updateSize: (productId: number, oldSize: string, newSize: string) => void;
   updateQuantity: (productId: number, size: string, newQuantity: number) => void;
@@ -29,35 +40,42 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
+  // --- Initialize Cart from LocalStorage ---
   useEffect(() => {
-    try {
-      const storedCart = localStorage.getItem("nayab_cart");
-      if (storedCart) {
-        setCart(JSON.parse(storedCart));
+    // setTimeout asynchronous behavior ke liye taake render block na ho
+    const timer = setTimeout(() => {
+      if (typeof window !== "undefined") {
+        try {
+          const storedCart = localStorage.getItem("nayab_cart");
+          if (storedCart) {
+            setCart(JSON.parse(storedCart));
+          }
+        } catch (error) {
+          console.error("Failed to load cart", error);
+        }
+        setIsInitialized(true);
       }
-    } catch (error) {
-      console.error("Failed to load cart", error);
-    }
-    setIsInitialized(true);
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, []);
 
+  // --- Save to LocalStorage ---
   useEffect(() => {
     if (isInitialized) {
       localStorage.setItem("nayab_cart", JSON.stringify(cart));
     }
   }, [cart, isInitialized]);
 
-  // --- Add to Cart (Fixed Mutation Issue) ---
-  const addToCart = (product: any, size: string) => {
+  // --- Add to Cart ---
+  const addToCart = (product: Product, size: string) => {
     setCart((prev) => {
       const existingItemIndex = prev.findIndex(
         (item) => item.id === product.id && item.selectedSize === size
       );
 
       if (existingItemIndex > -1) {
-        // Naya array banao
         const newCart = [...prev];
-        // Object ki copy banao aur phir update karo (Direct mutation nahi!)
         newCart[existingItemIndex] = {
           ...newCart[existingItemIndex],
           quantity: newCart[existingItemIndex].quantity + 1
@@ -72,7 +90,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           title: product.title,
           image: product.image,
           selectedSize: size,
-          price: product.prices[size],
+          price: product.prices[size], 
           quantity: 1,
         },
       ];
@@ -86,7 +104,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  // --- Update Size (Fixed Double Counting/Mutation Issue) ---
+  // --- Update Size ---
   const updateSize = (productId: number, oldSize: string, newSize: string) => {
     setCart((prev) => {
       const existingTargetItemIndex = prev.findIndex(
@@ -101,26 +119,28 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       const newCart = [...prev];
       const productData = PRODUCTS.find((p) => p.id === productId);
-      const newPrice = productData ? productData.prices[newSize] : newCart[currentItemIndex].price;
+      
+      let newPrice = newCart[currentItemIndex].price;
+      
+      if (productData && productData.prices) {
+         // Data file se ane wale prices object ko type-cast kar rahe hain
+         const prices = productData.prices as { [key: string]: string };
+         newPrice = prices[newSize];
+      }
 
       if (existingTargetItemIndex > -1) {
-        // SCENARIO: Merge items (e.g. 50ml -> 30ml, and 30ml already exists)
-        
-        // 1. Target item ki copy bana kar quantity add karo (Safe update)
+        // Merge items logic
         const updatedTargetItem = {
           ...newCart[existingTargetItemIndex],
           quantity: newCart[existingTargetItemIndex].quantity + newCart[currentItemIndex].quantity
         };
 
-        // 2. Array mein wapis updated item set karo
         newCart[existingTargetItemIndex] = updatedTargetItem;
-
-        // 3. Purana item remove karo
         newCart.splice(currentItemIndex, 1);
         
         return newCart;
       } else {
-        // SCENARIO: Normal change (just update size and price)
+        // Simple update logic
         newCart[currentItemIndex] = {
           ...newCart[currentItemIndex],
           selectedSize: newSize,
@@ -145,7 +165,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const toggleCart = () => setIsCartOpen(!isCartOpen);
 
   const cartTotal = cart.reduce((total, item) => {
-    const priceNum = parseInt(item.price.replace(/[^0-9]/g, ""));
+    const priceNum = parseInt(item.price.replace(/[^0-9]/g, "")) || 0;
     return total + priceNum * item.quantity;
   }, 0);
 
