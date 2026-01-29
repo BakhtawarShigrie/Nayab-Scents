@@ -269,9 +269,9 @@ export default function Footer() {
 
           <div className="border-t border-gray-300 mb-8"></div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="bg-black text-white px-4 py-2 font-serif text-xl tracking-widest border border-black cursor-pointer">
+            {/* <div className="bg-black text-white px-4 py-2 font-serif text-xl tracking-widest border border-black cursor-pointer">
               Nayab <span className="block text-[8px] text-center tracking-[0.2em] -mt-1 text-gray-300">SCENTS</span>
-            </div>
+            </div> */}
             <div className="text-xs text-gray-500 text-center md:text-left">
               Copyright 2025 Nayab Scents all rights reserved.
             </div>

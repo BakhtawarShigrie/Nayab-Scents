@@ -10,6 +10,9 @@ export const CATEGORIES = [
   { name: "Musk", image: "/bottle-01.png" },
 ];
 
+// --- ADDED WHATSAPP NUMBER ---
+export const WHATSAPP_NUMBER = "923176402959"; // Your WhatsApp number without '+' or spaces
+
 // --- 2. Products (Updated with Dynamic Prices) ---
 export const PRODUCTS = [
   { 
