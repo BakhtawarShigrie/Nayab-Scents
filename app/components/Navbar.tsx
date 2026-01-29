@@ -138,21 +138,21 @@ export default function Navbar() {
       >
         
         {/* LEFT: Menu Button & Logo */}
-        <div className="flex items-center gap-3 md:gap-6">
+        <div className="flex items-center gap-4 md:gap-6">
           <button onClick={toggleMenu} className="hover:opacity-70 transition-opacity">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
           </button>
 
-          {/* Logo Size Restored: text-lg on mobile, text-xl on desktop */}
-          <Link href="/" className="font-serif text-lg md:text-xl font-bold tracking-widest uppercase hover:opacity-80 transition-opacity whitespace-nowrap">
+          {/* Logo Hidden on Mobile (hidden md:block) */}
+          <Link href="/" className="hidden md:block font-serif text-lg md:text-xl font-bold tracking-widest uppercase hover:opacity-80 transition-opacity">
             Nayab Scents
           </Link>
         </div>
 
         {/* RIGHT: User -> Wishlist -> Cart Icons */}
-        <div className="flex items-center gap-4 md:gap-6">
+        <div className="flex items-center gap-5 md:gap-6">
           
           {/* 1. USER ICON / NAME */}
           {user ? (
