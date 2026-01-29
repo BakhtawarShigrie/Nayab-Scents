@@ -173,18 +173,18 @@ export default function Footer() {
   return (
     <>
       <footer className="bg-[#f9f9f9] text-[#333] pt-16 pb-8 font-sans border-t border-gray-200">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-10">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-y-12 gap-x-4 md:gap-8 mb-12">
             
             {/* 1. HELP */}
             <div>
               <h3 className="font-bold text-sm uppercase mb-6 tracking-wider">Help</h3>
               <ul className="space-y-4 text-sm text-gray-600">
-                <li><button onClick={() => setActivePopup("About")} className="hover:text-black transition-colors text-left">About Us</button></li>
-                <li><button onClick={() => setActivePopup("Contact")} className="hover:text-black transition-colors text-left">Contact Us</button></li>
-                <li><button onClick={() => setActivePopup("Terms")} className="hover:text-black transition-colors text-left">Terms & Conditions</button></li>
-                <li><button onClick={() => setActivePopup("Returns")} className="hover:text-black transition-colors text-left">Returns & Exchanges</button></li>
-                <li><button onClick={() => setActivePopup("Shipping")} className="hover:text-black transition-colors text-left">Shipping & Delivery</button></li>
+                <li><button onClick={() => setActivePopup("About")} className="hover:text-black cursor-pointer transition-colors text-left">About Us</button></li>
+                <li><button onClick={() => setActivePopup("Contact")} className="hover:text-black cursor-pointer transition-colors text-left">Contact Us</button></li>
+                <li><button onClick={() => setActivePopup("Terms")} className="hover:text-black cursor-pointer transition-colors text-left">Terms & Conditions</button></li>
+                <li><button onClick={() => setActivePopup("Returns")} className="hover:text-black cursor-pointer transition-colors text-left">Returns & Exchanges</button></li>
+                <li><button onClick={() => setActivePopup("Shipping")} className="hover:text-black cursor-pointer transition-colors text-left">Shipping & Delivery</button></li>
               </ul>
             </div>
 
@@ -192,8 +192,8 @@ export default function Footer() {
             <div>
               <h3 className="font-bold text-sm uppercase mb-6 tracking-wider">Information</h3>
               <ul className="space-y-4 text-sm text-gray-600">
-                <li><button onClick={() => setActivePopup("Redeem")} className="hover:text-black transition-colors text-left">Redeem Codes</button></li>
-                <li><button onClick={() => setActivePopup("Tracking")} className="hover:text-black transition-colors text-left">Orders Tracking</button></li>
+                <li><button onClick={() => setActivePopup("Redeem")} className="hover:text-black cursor-pointer transition-colors text-left">Redeem Codes</button></li>
+                <li><button onClick={() => setActivePopup("Tracking")} className="hover:text-black cursor-pointer transition-colors text-left">Orders Tracking</button></li>
               </ul>
             </div>
 
@@ -212,7 +212,7 @@ export default function Footer() {
               <h3 className="font-bold text-sm uppercase mb-6 tracking-wider">Collections</h3>
               <ul className="space-y-4 text-sm text-gray-600">
                 <li><Link href="/Products" className="hover:text-black transition-colors">All Perfumes</Link></li>
-                <li><button onClick={() => setActivePopup("Families")} className="hover:text-black transition-colors text-left">By Scent Family</button></li>
+                <li><button onClick={() => setActivePopup("Families")} className="hover:text-black cursor-pointer transition-colors text-left">By Scent Family</button></li>
                 <li><Link href="/Products?sale=true" className="text-[#d95e00] hover:text-red-700 transition-colors">Sale</Link></li>
               </ul>
             </div>
@@ -276,7 +276,7 @@ export default function Footer() {
               Copyright 2025 Nayab Scents all rights reserved.
             </div>
             <div className="flex items-center gap-4">
-              <button onClick={scrollToTop} className="bg-[#666] hover:bg-[#444] text-white w-10 h-10 flex items-center justify-center rounded-sm transition-colors shadow-sm">
+              <button onClick={scrollToTop} className="bg-[#666] cursor-pointer hover:bg-[#444] text-white w-10 h-10 flex items-center justify-center rounded-sm transition-colors shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" /></svg>
               </button>
             </div>

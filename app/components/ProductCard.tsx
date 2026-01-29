@@ -77,7 +77,7 @@ const ProductCard = ({ id, title, prices, image }: ProductCardProps) => {
       </div>
 
       {/* Expanded View */}
-      <div className={`absolute bottom-0 left-0 w-full bg-white p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] flex flex-col justify-between transition-transform duration-500 ease-in-out z-20 
+      <div className={`absolute cursor-default bottom-0 left-0 w-full bg-white p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] flex flex-col justify-between transition-transform duration-500 ease-in-out z-20 
         ${isClicked ? 'translate-y-0' : 'translate-y-full'} 
         group-hover:translate-y-0`}
       >
@@ -100,7 +100,7 @@ const ProductCard = ({ id, title, prices, image }: ProductCardProps) => {
                     e.stopPropagation();
                     setSelectedSize(size);
                   }}
-                  className={`px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center justify-center transition-all shadow-sm ${
+                  className={`px-3 py-1.5 cursor-pointer rounded-full text-[10px] font-bold flex items-center justify-center transition-all shadow-sm ${
                     selectedSize === size
                       ? "bg-[#1a2b5a] text-white border border-[#1a2b5a]"
                       : "bg-transparent text-black border border-gray-300 hover:border-black"
@@ -115,14 +115,14 @@ const ProductCard = ({ id, title, prices, image }: ProductCardProps) => {
 
         <div className="flex gap-3 w-full">
           <Link href={`/products/${id}`} className="flex-1" onClick={(e) => e.stopPropagation()}>
-            <button className="w-full h-full border border-gray-300 text-black py-3.5 rounded-md font-bold uppercase tracking-widest text-[10px] hover:bg-black hover:text-white hover:border-black transition-colors">
+            <button className="w-full h-full cursor-pointer border border-gray-300 text-black py-3.5 rounded-md font-bold uppercase tracking-widest text-[10px] hover:bg-black hover:text-white hover:border-black transition-colors">
               View Detail
             </button>
           </Link>
           
           <button 
             onClick={handleOrderNow}
-            className="flex-1 bg-[#1a2b5a] text-white py-3.5 rounded-md font-bold uppercase tracking-widest text-[10px] hover:bg-black transition-colors shadow-lg"
+            className="flex-1 bg-[#1a2b5a] cursor-pointer text-white py-3.5 rounded-md font-bold uppercase tracking-widest text-[10px] hover:bg-black transition-colors shadow-lg"
           >
             Order Now
           </button>

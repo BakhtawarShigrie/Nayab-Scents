@@ -220,7 +220,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 <div className="border border-gray-300 p-3 rounded text-sm text-gray-500 bg-gray-100 flex items-center">
                   {user ? user.name : "Please Login to Review"}
                 </div>
-                <select value={userReview.rating} onChange={(e) => setUserReview({...userReview, rating: parseInt(e.target.value)})} className="border border-gray-300 p-3 rounded text-sm focus:outline-none focus:border-black">
+                <select value={userReview.rating} onChange={(e) => setUserReview({...userReview, rating: parseInt(e.target.value)})} className="border cursor-pointer border-gray-300 p-3 rounded text-sm focus:outline-none focus:border-black">
                   <option value="5">★★★★★ (Excellent)</option>
                   <option value="4">★★★★☆ (Good)</option>
                   <option value="3">★★★☆☆ (Average)</option>
@@ -229,7 +229,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 </select>
               </div>
               <textarea placeholder="Write your review here..." rows={4} value={userReview.comment} onChange={(e) => setUserReview({...userReview, comment: e.target.value})} className="border border-gray-300 p-3 rounded text-sm focus:outline-none focus:border-black resize-none" />
-              <button onClick={handleReviewSubmit} className="bg-black text-white py-3 rounded uppercase font-bold tracking-widest text-xs hover:bg-gray-800 transition-colors w-full md:w-auto self-end px-10">Post Review</button>
+              <button onClick={handleReviewSubmit} className="bg-black text-white py-3 rounded uppercase font-bold tracking-widest text-xs hover:bg-gray-800 transition-colors w-full md:w-auto self-end cursor-pointer px-10">Post Review</button>
             </div>
           ) : (
             <div className="bg-green-50 border border-green-200 p-6 rounded text-center">
@@ -243,8 +243,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                  <p className="text-gray-700 text-sm">&quot;{userReview.comment}&quot;</p>
               </div>
               <div className="flex gap-4 justify-center">
-                <button onClick={handleEditReview} className="text-xs font-bold uppercase underline hover:text-black text-gray-500">Edit</button>
-                <button onClick={handleDeleteReview} className="text-xs font-bold uppercase underline hover:text-red-600 text-red-400">Delete</button>
+                <button onClick={handleEditReview} className="text-xs font-bold uppercase underline hover:text-black cursor-pointer text-gray-500">Edit</button>
+                <button onClick={handleDeleteReview} className="text-xs font-bold uppercase underline hover:text-red-600 cursor-pointer text-red-400">Delete</button>
               </div>
             </div>
           )}
@@ -258,7 +258,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             <h2 className="text-2xl md:text-5xl font-bold text-black px-4 md:px-8 tracking-tight uppercase text-center whitespace-nowrap font-serif">You May Also Like</h2>
             <div className="flex-1 h-px bg-gray-200" />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-5 gap-10">
             {relatedProducts.map((p) => (
               <ProductCard key={p.id} id={p.id} title={p.title} prices={p.prices} image={p.image} />
             ))}

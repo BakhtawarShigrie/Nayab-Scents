@@ -56,7 +56,7 @@ function LoginForm() {
 
           <button 
             type="submit"
-            className="w-full bg-black text-white py-4 font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors rounded-sm shadow-lg"
+            className="w-full cursor-pointer bg-black text-white py-4 font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors rounded-sm shadow-lg"
           >
             Login
           </button>

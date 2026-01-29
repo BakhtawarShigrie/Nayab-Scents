@@ -27,7 +27,7 @@ const AdSection = () => {
             <span className="text-white font-medium"> premium branded timepieces</span>.
           </p>
           <Link href="https://nayabwatch.com" target="_blank">
-            <button className="bg-[#D4B07B] hover:bg-[#c29e6b] mb-15 text-black px-8 py-4 rounded-sm text-xs md:text-sm font-bold uppercase tracking-wider transition-colors duration-300 shadow-lg">
+            <button className="bg-[#D4B07B] cursor-pointer hover:bg-[#c8954d] mb-15 text-black px-8 py-4 rounded-sm text-xs md:text-sm font-bold uppercase tracking-wider transition-colors duration-300 shadow-lg">
               Explore our Watches
             </button>
           </Link>

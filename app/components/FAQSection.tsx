@@ -31,7 +31,7 @@ export default function FAQSection() {
                 <div key={index} className={`border-b border-gray-300 transition-all duration-300 ${isLastVisible ? 'opacity-30 blur-[1px] pointer-events-none' : ''}`}>
                   <button
                     onClick={() => toggleFAQ(index)}
-                    className="w-full py-6 flex justify-between items-center text-left hover:text-gray-600 transition-colors focus:outline-none"
+                    className="w-full py-6 flex justify-between cursor-pointer items-center text-left hover:text-gray-600 transition-colors focus:outline-none"
                   >
                     <span className="text-lg md:text-xl font-serif text-[#1a1a1a]">{faq.question}</span>
                     <span className="text-2xl font-light text-gray-500 ml-4">{openIndex === index ? "−" : "+"}</span>
@@ -46,7 +46,7 @@ export default function FAQSection() {
 
           {!showAll && (
             <div className="absolute bottom-0 left-0 w-full pt-10 pb-2 bg-gradient-to-t from-[#f0f2eb] to-transparent flex justify-start pl-0">
-              <button onClick={() => setShowAll(true)} className="bg-[#dcdccf] hover:bg-[#cfcfc2] text-[#1a1a1a] px-8 py-3 text-sm font-medium transition-colors rounded-sm">
+              <button onClick={() => setShowAll(true)} className="bg-[#dcdccf] cursor-pointer hover:bg-[#cfcfc2] text-[#1a1a1a] px-8 py-3 text-sm font-medium transition-colors rounded-sm">
                 Show More
               </button>
             </div>
