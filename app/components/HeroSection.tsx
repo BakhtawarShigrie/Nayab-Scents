@@ -95,7 +95,7 @@ export default function HeroSection() {
           } as any}
         >
           <div className="transform transition-transform duration-75 ease-linear translate-y-[calc(var(--split-progress)*25vh)] md:translate-y-0 md:translate-x-[calc(var(--split-progress)*25vw)]">
-              <div className="relative w-[50vw] h-[50vh] md:w-[25vw] md:h-[70vh]">
+              <div className="relative w-[50vw] h-[50vh] md:w-[25vw] md:h-[65vh]">
               <div className="absolute inset-0 bg-green-600 rounded-full blur-3xl opacity-20 animate-pulse"></div>
               <Image src="/bottle-01.png" alt="Green Water Bottle" fill className="object-contain drop-shadow-2xl filter brightness-110" priority />
             </div>

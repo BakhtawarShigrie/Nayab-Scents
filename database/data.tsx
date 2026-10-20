@@ -1,12 +1,12 @@
 // database/data.tsx
 
 export const CATEGORIES = [
-  { name: "Woody", image: "/bottle-01.png" },
-  { name: "Floral", image: "/bottle-01.png" },
-  { name: "Fresh", image: "/bottle-01.png" },
-  { name: "Oriental", image: "/bottle-01.png" },
-  { name: "Citrus", image: "/bottle-01.png" },
-  { name: "Musk", image: "/bottle-01.png" },
+  { name: "Woody", image: "/Categories/woody.jpg" },
+  { name: "Floral", image: "/Categories/floral.jpg" },
+  { name: "Fresh", image: "/Categories/fresh.jpg" },
+  { name: "Oriental", image: "/Categories/oriental.jpg" },
+  { name: "Citrus", image: "/Categories/citrus.jpg" },
+  { name: "Musk", image: "/Categories/musk.jpg" },
 ];
 
 export const PRODUCTS = [
