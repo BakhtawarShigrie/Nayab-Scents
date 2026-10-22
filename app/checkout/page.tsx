@@ -6,7 +6,8 @@ import { useCart } from "@/app/context/CartContext";
 import { WHATSAPP_NUMBER } from "@/database/data";
 
 export default function CheckoutPage() {
-  const { cart, updateSize, updateQuantity, removeFromCart, cartTotal } = useCart();
+  // Yahan se updateSize hata diya gaya hai
+  const { cart, updateQuantity, removeFromCart, cartTotal } = useCart();
   const SHIPPING_COST = 250;
   
   // Modal State
@@ -31,8 +32,9 @@ export default function CheckoutPage() {
       return;
     }
 
+    // Naye data structure ke mutabiq item.size aur item.price format kiye gaye hain
     const orderItems = cart.map(item => 
-      `• ${item.title} (${item.selectedSize}) x ${item.quantity} - ${item.price}`
+      `• ${item.title} (${item.size}) x ${item.quantity}\nRs. ${(item.price * item.quantity).toLocaleString()}`
     ).join("\n");
 
     const totalAmount = cartTotal + SHIPPING_COST;
@@ -69,10 +71,10 @@ export default function CheckoutPage() {
               <h2 className="text-lg md:text-xl font-bold mb-6 uppercase tracking-wider text-black">Order Summary</h2>
               
               {cart.length === 0 ? (
-                <p className="text-gray-800 font-medium">Your cart is empty. <Link href="/" className="underline cursor-pointer text-black font-bold">Go Shopping</Link></p>
+                <p className="text-gray-800 font-medium">Your cart is empty. <Link href="/products" className="underline cursor-pointer text-black font-bold">Go Shopping</Link></p>
               ) : (
                 cart.map((item) => (
-                  <div key={`${item.id}-${item.selectedSize}`} className="flex flex-row items-start gap-4 border-b border-gray-300 last:border-0 pb-4 mb-4 last:mb-0">
+                  <div key={item.cartItemId} className="flex flex-row items-start gap-4 border-b border-gray-300 last:border-0 pb-4 mb-4 last:mb-0">
                     
                     {/* Image */}
                     <div className="relative w-20 h-20 md:w-32 md:h-32 bg-white rounded-md border border-gray-200 flex-shrink-0">
@@ -82,23 +84,18 @@ export default function CheckoutPage() {
                     <div className="flex-1 text-left">
                       <div className="flex justify-between items-start mb-1">
                         <h3 className="text-sm md:text-lg font-bold text-black leading-tight">{item.title}</h3>
-                        <p className="text-sm md:text-lg font-bold text-[#1a2b5a] ml-2 whitespace-nowrap">{item.price}</p>
+                        {/* Price ab number hai, isliye isko toLocaleString ke sath show kiya gaya hai */}
+                        <p className="text-sm md:text-lg font-bold text-[#1a2b5a] ml-2 whitespace-nowrap">Rs. {item.price.toLocaleString()}</p>
                       </div>
                       
                       {/* Controls */}
                       <div className="flex flex-col gap-2 mt-2">
-                        {/* Size Selector */}
+                        {/* Size Display */}
                         <div className="flex items-center gap-2">
                           <label className="text-[10px] md:text-xs text-black font-bold uppercase">Size:</label>
-                          <select 
-                            value={item.selectedSize}
-                            onChange={(e) => updateSize(item.id, item.selectedSize, e.target.value)}
-                            className="bg-white border cursor-pointer border-gray-400 text-black rounded px-2 py-1 text-[10px] md:text-sm font-bold focus:outline-none"
-                          >
-                            <option value="30 ml">30 ml</option>
-                            <option value="50 ml">50 ml</option>
-                            <option value="100 ml">100 ml</option>
-                          </select>
+                          <span className="bg-gray-100 border border-gray-300 text-black rounded px-2 py-1 text-[10px] md:text-sm font-bold">
+                            {item.size}
+                          </span>
                         </div>
                         
                         {/* Quantity Selector */}
@@ -106,7 +103,7 @@ export default function CheckoutPage() {
                            <label className="text-[10px] md:text-xs text-black font-bold uppercase">Qty:</label>
                            <div className="flex items-center border border-gray-400 rounded bg-white h-6 md:h-8">
                               <button 
-                                onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity - 1)}
+                                onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}
                                 className="px-2 text-black cursor-pointer hover:bg-gray-200 border-r border-gray-300 font-bold disabled:opacity-50 text-xs h-full"
                                 disabled={item.quantity <= 1}
                               >
@@ -114,7 +111,7 @@ export default function CheckoutPage() {
                               </button>
                               <span className="px-3 text-[10px] md:text-sm font-bold text-black">{item.quantity}</span>
                               <button 
-                                onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity + 1)}
+                                onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
                                 className="px-2 text-black cursor-pointer hover:bg-gray-200 border-l border-gray-300 font-bold text-xs h-full"
                               >
                                 +
@@ -124,7 +121,7 @@ export default function CheckoutPage() {
                       </div>
 
                       <button 
-                        onClick={() => removeFromCart(item.id, item.selectedSize)}
+                        onClick={() => removeFromCart(item.cartItemId)}
                         className="mt-3 cursor-pointer text-[10px] md:text-sm text-red-600 hover:text-red-800 underline uppercase font-bold tracking-wider"
                       >
                         Remove
@@ -145,10 +142,10 @@ export default function CheckoutPage() {
               {cart.length > 0 && (
                 <div className="mb-6 space-y-3 border-b border-gray-700 pb-6">
                   {cart.map((item) => (
-                    <div key={`summary-${item.id}-${item.selectedSize}`} className="flex justify-between items-start text-sm">
+                    <div key={`summary-${item.cartItemId}`} className="flex justify-between items-start text-sm">
                       <div className="text-gray-300 w-2/3">
                         {item.title} 
-                        <span className="text-xs text-gray-500 block">({item.selectedSize})</span>
+                        <span className="text-xs text-gray-500 block">({item.size})</span>
                       </div>
                       <div className="font-bold text-white">
                         x {item.quantity}

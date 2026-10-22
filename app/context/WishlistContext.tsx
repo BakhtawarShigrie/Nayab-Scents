@@ -16,6 +16,7 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
 
   // Page load par LocalStorage se wishlist fetch karna
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMounted(true);
     const savedWishlist = localStorage.getItem("wishlist");
     if (savedWishlist) {
