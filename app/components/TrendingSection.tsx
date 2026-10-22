@@ -1,50 +1,48 @@
 "use client";
 import ProductCard from "./ProductCard";
-import { PRODUCTS } from "@/database/data";
-import Link from "next/link"; // Link Import kiya
+import { products } from "@/database/data"; // Uppercase PRODUCTS ko lowercase products se replace kiya
+import Link from "next/link"; 
 
 export default function TrendingSection() {
-  // Sirf pehle 4 products dikhane ke liye slice logic
-  const displayedProducts = PRODUCTS.slice(0, 4);
+  // Trending section ke liye shuru ke 4 products nikal rahe hain
+  const trendingProducts = products.slice(0, 4);
 
   return (
-    <section id="trending" className="relative z-30 bg-white pb-14 pt-10 sm:pt-16 px-6 md:px-20">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col items-center mb-12 md:mb-16">
-          <div className="flex items-center w-full mb-6 md:mb-8">
-            <div className="flex-1 h-[1px] bg-gray-200" />
-            <h2 className="text-2xl md:text-6xl font-bold text-black px-4 md:px-8 tracking-tight uppercase text-center whitespace-nowrap">Trending Products</h2>
-            <div className="flex-1 h-[1px] bg-gray-200" />
-          </div>
-          <div className="flex flex-wrap justify-center gap-3 md:gap-4">
-            <button className="px-6 cursor-pointer py-2 md:px-8 md:py-2.5 bg-black text-white rounded-full text-xs md:text-sm font-bold uppercase tracking-widest shadow-md">Best</button>
-            <button className="px-6 cursor-pointer py-2 md:px-8 md:py-2.5 border-2 border-gray-100 text-gray-400 rounded-full text-xs md:text-sm font-bold uppercase tracking-widest hover:border-black hover:text-black transition-all">Men</button>
-            <button className="px-6 cursor-pointer py-2 md:px-8 md:py-2.5 border-2 border-gray-100 text-gray-400 rounded-full text-xs md:text-sm font-bold uppercase tracking-widest hover:border-black hover:text-black transition-all">Women</button>
-            <button className="px-6 cursor-pointer py-2 md:px-8 md:py-2.5 border-2 border-gray-100 text-gray-400 rounded-full text-xs md:text-sm font-bold uppercase tracking-widest hover:border-black hover:text-black transition-all">Unisex</button>
-          </div>
-        </div>
+    <section className="py-20 bg-[#fcfcfc]">
+      <div className="container mx-auto px-4 max-w-6xl">
         
-        {/* Grid View */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-          {displayedProducts.map((product) => (
+        {/* Section Heading */}
+        <div className="flex items-center w-full mb-12">
+          <div className="flex-1 h-px bg-gray-200" />
+          <h2 className="text-2xl md:text-4xl font-bold text-black px-4 md:px-8 tracking-tight uppercase text-center whitespace-nowrap font-serif">
+            Trending Now
+          </h2>
+          <div className="flex-1 h-px bg-gray-200" />
+        </div>
+
+        {/* Products Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-5 gap-10">
+          {trendingProducts.map((p) => (
             <ProductCard 
-              key={product.id} 
-              id={product.id}
-              title={product.title} 
-              prices={product.prices} 
-              image={product.image} 
+              key={p.id} 
+              id={p.id} 
+              name={p.name} 
+              inspiredBy={p.inspiredBy} 
+              prices={p.prices} 
+              image={p.image} 
             />
           ))}
         </div>
 
-        {/* Show More Button Linked to /products */}
-        <div className="flex justify-center mt-16">
+        {/* View All Button */}
+        <div className="mt-14 flex justify-center">
           <Link href="/products">
-            <button className="px-10 py-3 hover:bg-gray-200 cursor-pointer hover:text-black text-white rounded-full font-bold uppercase tracking-widest text-sm bg-gray-800 transition-all shadow-lg hover:shadow-xl">
-              Show More
+            <button className="bg-white border-2 border-black text-black hover:bg-black hover:text-white py-3 px-10 rounded-full font-bold uppercase tracking-widest transition-all text-sm cursor-pointer shadow-sm hover:shadow-md active:scale-95">
+              View All Collection
             </button>
           </Link>
         </div>
+
       </div>
     </section>
   );

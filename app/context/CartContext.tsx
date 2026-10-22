@@ -1,183 +1,129 @@
 "use client";
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { PRODUCTS } from "@/database/data";
 
-// --- Types Define Karein (Fixed: Removed 'any') ---
-interface Product {
-  id: number;
-  title: string;
+// --- Types Define Karein ---
+export interface Product {
+  id: string | number;
+  title?: string;
+  name?: string;
+  prices: { [key: string]: number };
   image: string;
-  // Prices ab strictly string-key object hai, 'any' hata diya
-  prices: { [key: string]: string };
-  category?: string;
-  gender?: string;
 }
 
-interface CartItem {
-  id: number;
+export interface CartItem {
+  cartItemId: string; // Unique ID (Product ID + Size)
+  id: string;
   title: string;
-  image: string;
-  selectedSize: string;
-  price: string;
+  size: string;
+  price: number;
   quantity: number;
+  image: string;
 }
 
 interface CartContextType {
   cart: CartItem[];
-  isCartOpen: boolean;
-  addToCart: (product: Product, size: string) => void;
-  removeFromCart: (productId: number, size: string) => void;
-  updateSize: (productId: number, oldSize: string, newSize: string) => void;
-  updateQuantity: (productId: number, size: string, newQuantity: number) => void;
-  toggleCart: () => void;
+  addToCart: (product: Product, size: string, quantity?: number) => void;
+  removeFromCart: (cartItemId: string) => void;
+  updateQuantity: (cartItemId: string, quantity: number) => void;
+  clearCart: () => void;
   cartTotal: number;
+  cartCount: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export function CartProvider({ children }: { children: ReactNode }) {
+export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  // --- Initialize Cart from LocalStorage ---
+  // Page load par LocalStorage se cart fetch karna
   useEffect(() => {
-    // setTimeout asynchronous behavior ke liye taake render block na ho
-    const timer = setTimeout(() => {
-      if (typeof window !== "undefined") {
-        try {
-          const storedCart = localStorage.getItem("nayab_cart");
-          if (storedCart) {
-            setCart(JSON.parse(storedCart));
-          }
-        } catch (error) {
-          console.error("Failed to load cart", error);
-        }
-        setIsInitialized(true);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsMounted(true);
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) {
+      try {
+        const parsedCart = JSON.parse(savedCart);
+        setCart(parsedCart);
+      } catch (error) {
+        console.error("Failed to parse cart:", error);
       }
-    }, 0);
-
-    return () => clearTimeout(timer);
+    }
   }, []);
 
-  // --- Save to LocalStorage ---
+  // Jab bhi cart update ho, usay LocalStorage mein save karna
   useEffect(() => {
-    if (isInitialized) {
-      localStorage.setItem("nayab_cart", JSON.stringify(cart));
+    if (isMounted) {
+      localStorage.setItem("cart", JSON.stringify(cart));
     }
-  }, [cart, isInitialized]);
+  }, [cart, isMounted]);
 
-  // --- Add to Cart ---
-  const addToCart = (product: Product, size: string) => {
-    setCart((prev) => {
-      const existingItemIndex = prev.findIndex(
-        (item) => item.id === product.id && item.selectedSize === size
-      );
+  const addToCart = (product: Product, size: string, quantity: number = 1) => {
+    setCart((prevCart) => {
+      // Different sizes ke liye unique cartItemId banaya hai
+      const cartItemId = `${product.id}-${size}`;
+      const existingItem = prevCart.find((item) => item.cartItemId === cartItemId);
 
-      if (existingItemIndex > -1) {
-        const newCart = [...prev];
-        newCart[existingItemIndex] = {
-          ...newCart[existingItemIndex],
-          quantity: newCart[existingItemIndex].quantity + 1
-        };
-        return newCart;
-      }
-      
-      return [
-        ...prev,
-        {
-          id: product.id,
-          title: product.title,
-          image: product.image,
-          selectedSize: size,
-          price: product.prices[size], 
-          quantity: 1,
-        },
-      ];
-    });
-    setIsCartOpen(true);
-  };
-
-  const removeFromCart = (productId: number, size: string) => {
-    setCart((prev) => 
-      prev.filter((item) => !(item.id === productId && item.selectedSize === size))
-    );
-  };
-
-  // --- Update Size ---
-  const updateSize = (productId: number, oldSize: string, newSize: string) => {
-    setCart((prev) => {
-      const existingTargetItemIndex = prev.findIndex(
-        (item) => item.id === productId && item.selectedSize === newSize
-      );
-
-      const currentItemIndex = prev.findIndex(
-        (item) => item.id === productId && item.selectedSize === oldSize
-      );
-
-      if (currentItemIndex === -1) return prev;
-
-      const newCart = [...prev];
-      const productData = PRODUCTS.find((p) => p.id === productId);
-      
-      let newPrice = newCart[currentItemIndex].price;
-      
-      if (productData && productData.prices) {
-         // Data file se ane wale prices object ko type-cast kar rahe hain
-         const prices = productData.prices as { [key: string]: string };
-         newPrice = prices[newSize];
+      if (existingItem) {
+        // Agar item pehle se cart mein hai, toh sirf quantity barha dein
+        return prevCart.map((item) =>
+          item.cartItemId === cartItemId
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
       }
 
-      if (existingTargetItemIndex > -1) {
-        // Merge items logic
-        const updatedTargetItem = {
-          ...newCart[existingTargetItemIndex],
-          quantity: newCart[existingTargetItemIndex].quantity + newCart[currentItemIndex].quantity
-        };
+      // Naye item ki details nikalna
+      const price = product.prices[size] || 0;
+      const title = product.name || product.title || "Nayab Perfume";
 
-        newCart[existingTargetItemIndex] = updatedTargetItem;
-        newCart.splice(currentItemIndex, 1);
-        
-        return newCart;
-      } else {
-        // Simple update logic
-        newCart[currentItemIndex] = {
-          ...newCart[currentItemIndex],
-          selectedSize: newSize,
-          price: newPrice,
-        };
-        return newCart;
-      }
+      const newItem: CartItem = {
+        cartItemId,
+        id: String(product.id),
+        title,
+        size,
+        price,
+        quantity,
+        image: product.image,
+      };
+
+      return [...prevCart, newItem];
     });
   };
 
-  const updateQuantity = (productId: number, size: string, newQuantity: number) => {
-    if (newQuantity < 1) return;
-    setCart((prev) =>
-      prev.map((item) =>
-        item.id === productId && item.selectedSize === size
-          ? { ...item, quantity: newQuantity }
-          : item
+  const removeFromCart = (cartItemId: string) => {
+    setCart((prevCart) => prevCart.filter((item) => item.cartItemId !== cartItemId));
+  };
+
+  const updateQuantity = (cartItemId: string, quantity: number) => {
+    if (quantity < 1) return; // Quantity 0 ya negative nahi ho sakti
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.cartItemId === cartItemId ? { ...item, quantity } : item
       )
     );
   };
 
-  const toggleCart = () => setIsCartOpen(!isCartOpen);
+  const clearCart = () => {
+    setCart([]);
+  };
 
-  const cartTotal = cart.reduce((total, item) => {
-    const priceNum = parseInt(item.price.replace(/[^0-9]/g, "")) || 0;
-    return total + priceNum * item.quantity;
-  }, 0);
+  const cartTotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  const cartCount = cart.reduce((count, item) => count + item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ cart, isCartOpen, addToCart, removeFromCart, updateSize, updateQuantity, toggleCart, cartTotal }}>
+    <CartContext.Provider
+      value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, cartTotal, cartCount }}
+    >
       {children}
     </CartContext.Provider>
   );
-}
+};
 
 export const useCart = () => {
   const context = useContext(CartContext);
-  if (!context) throw new Error("useCart must be used within a CartProvider");
+  if (context === undefined) {
+    throw new Error("useCart must be used within a CartProvider");
+  }
   return context;
 };

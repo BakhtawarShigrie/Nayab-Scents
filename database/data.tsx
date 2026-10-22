@@ -9,52 +9,84 @@ export const CATEGORIES = [
   { name: "Musk", image: "/Categories/musk.jpg" },
 ];
 
-export const PRODUCTS = [
-  { 
-    id: 1, 
-    title: "Classic Nayab", 
-    prices: { "30 ml": "Rs.2,999", "50 ml": "Rs.4,500", "100 ml": "Rs.8,000" }, 
-    image: "/bottle-01.png", 
-    category: "Woody", 
-    gender: "Men",
-    stock: 734 // Random stock 500-1000
+export const products = [
+  {
+    id: "imperial-pineapple",
+    name: "Imperial Pineapple",
+    inspiredBy: "Aventus Creed",
+    prices: { "30ml": 1999, "50ml": 2499, "100ml": 3999 },
+    image: "/bottle-01.png",
   },
-  { 
-    id: 2, 
-    title: "Royal Scent", 
-    prices: { "30 ml": "Rs.3,500", "50 ml": "Rs.5,200", "100 ml": "Rs.9,500" },
-    image: "/bottle-01.png", 
-    category: "Floral", 
-    gender: "Women",
-    stock: 912 
+  {
+    id: "midnight",
+    name: "Midnight",
+    inspiredBy: "Azzaro Most Wanted",
+    prices: { "30ml": 1599, "50ml": 1999, "100ml": 2999 },
+    image: "/bottle-01.png",
   },
-  { 
-    id: 3, 
-    title: "Azure Mist", 
-    prices: { "30 ml": "Rs.5,650", "50 ml": "Rs.8,500", "100 ml": "Rs.15,000" },
-    image: "/bottle-01.png", 
-    category: "Fresh", 
-    gender: "Unisex",
-    stock: 567 
+  {
+    id: "crystal",
+    name: "Crystal",
+    inspiredBy: "Baccarat Rouge-540",
+    prices: { "30ml": 1999, "50ml": 2499, "100ml": 3999 },
+    image: "/bottle-01.png",
   },
-  { 
-    id: 4, 
-    title: "Velvet Oud", 
-    prices: { "30 ml": "Rs.7,600", "50 ml": "Rs.11,000", "100 ml": "Rs.20,000" },
-    image: "/bottle-01.png", 
-    category: "Oriental", 
-    gender: "Unisex",
-    stock: 889 
+  {
+    id: "blue-horizon",
+    name: "Blue Horizon",
+    inspiredBy: "Bleu De Chanel",
+    prices: { "30ml": 1399, "50ml": 1899, "100ml": 2699 },
+    image: "/bottle-01.png",
   },
-  { 
-    id: 5, 
-    title: "Mystic Musk", 
-    prices: { "30 ml": "Rs.3,200", "50 ml": "Rs.4,800", "100 ml": "Rs.8,500" },
-    image: "/bottle-01.png", 
-    category: "Musk", 
-    gender: "Unisex",
-    stock: 645 
+  {
+    id: "crimson-desire",
+    name: "Crimson Desire",
+    inspiredBy: "Dunhill Desire",
+    prices: { "30ml": 1399, "50ml": 1899, "100ml": 2799 },
+    image: "/bottle-01.png",
   },
+  {
+    id: "blossom-kiss",
+    name: "Blossom Kiss",
+    inspiredBy: "Gucci Flora",
+    prices: { "30ml": 1499, "50ml": 1999, "100ml": 2999 },
+    image: "/bottle-01.png",
+  },
+  {
+    id: "emerald",
+    name: "Emerald",
+    inspiredBy: "Nishane Hacivat",
+    prices: { "30ml": 1999, "50ml": 2499, "100ml": 3999 },
+    image: "/bottle-01.png",
+  },
+  {
+    id: "millionaire",
+    name: "Millionaire",
+    inspiredBy: "One Million",
+    prices: { "30ml": 1399, "50ml": 1899, "100ml": 2799 },
+    image: "/bottle-01.png",
+  },
+  {
+    id: "velvet-plum",
+    name: "Velvet Plum",
+    inspiredBy: "Pure Seduction",
+    prices: { "30ml": 1299, "50ml": 1699, "100ml": 2599 },
+    image: "/bottle-01.png",
+  },
+  {
+    id: "blue-storm",
+    name: "Blue Storm",
+    inspiredBy: "Sauvage Dior",
+    prices: { "30ml": 1350, "50ml": 1799, "100ml": 2699 },
+    image: "/bottle-01.png",
+  },
+  {
+    id: "afterglow",
+    name: "Afterglow",
+    inspiredBy: "Thomas Kosmala No-4",
+    prices: { "30ml": 1799, "50ml": 2299, "100ml": 3799 },
+    image: "/bottle-01.png",
+  }
 ];
 
 export const COLLECTIONS = [

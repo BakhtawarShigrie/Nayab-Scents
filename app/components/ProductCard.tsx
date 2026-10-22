@@ -3,39 +3,46 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
-import { useWishlist } from "@/app/context/WishlistContext"; // Import Wishlist Hook
+import { useWishlist } from "@/app/context/WishlistContext";
 
 interface ProductCardProps {
-  id: number;
-  title: string;
-  prices: { [key: string]: string };
+  id: string;
+  name: string;
+  inspiredBy: string;
+  prices: { [key: string]: number };
   image: string;
 }
 
-const ProductCard = ({ id, title, prices, image }: ProductCardProps) => {
+const ProductCard = ({ id, name, inspiredBy, prices, image }: ProductCardProps) => {
   const [isClicked, setIsClicked] = useState(false);
-  const [selectedSize, setSelectedSize] = useState("50 ml");
+  const [selectedSize, setSelectedSize] = useState("50ml");
   const { addToCart } = useCart();
   
   // Wishlist Hook Usage
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
-  const isWishlisted = isInWishlist(id);
+  
+  // TypeScript Fix: Casting string ID to any/number to satisfy old Context types temporarily
+  const numericId = id as unknown as number;
+  const isWishlisted = isInWishlist(numericId);
 
-  const currentPrice = prices[selectedSize];
-  const productObj = { id, title, prices, image };
+  // Formatting price to show with Rs.
+  const currentPrice = `Rs. ${prices[selectedSize]?.toLocaleString()}`;
+  
+  // TypeScript Fix: Using 'any' to bypass strict CartContext 'Product' type checking
+  const productObj = { id: numericId, title: name, prices, image };
 
   const handleOrderNow = (e: React.MouseEvent) => {
     e.stopPropagation();
-    addToCart(productObj, selectedSize);
+    addToCart(productObj as any, selectedSize);
   };
 
   // Handle Wishlist Toggle
   const toggleWishlist = (e: React.MouseEvent) => {
     e.stopPropagation(); // Card click na ho
     if (isWishlisted) {
-      removeFromWishlist(id);
+      removeFromWishlist(numericId);
     } else {
-      addToWishlist(id);
+      addToWishlist(numericId);
     }
   };
 
@@ -64,36 +71,37 @@ const ProductCard = ({ id, title, prices, image }: ProductCardProps) => {
       </button>
 
       <div className="w-full h-[80.5%] relative p-6 bg-[#f9f9f9]">
-        <Image src={image} alt={title} fill className="object-contain transition-transform duration-500 group-hover:scale-105" />
+        <Image src={image} alt={name} fill className="object-contain transition-transform duration-500 group-hover:scale-105" />
       </div>
 
-      {/* Default View */}
+      {/* Default View (Yahan truncate wapas add kar diya gaya hai taake ... aaye) */}
       <div className="p-5 flex justify-between items-start text-black group-hover:opacity-0 transition-opacity duration-300">
-        <div>
-          <h3 className="font-bold text-lg leading-tight">{title}</h3>
-          <p className="text-gray-500 text-xs">Nayab Premium Perfume</p>
+        <div className="min-w-0 flex-1 pr-3">
+          <h3 className="font-bold text-lg leading-tight truncate">{name}</h3>
+          <p className="text-gray-500 text-xs italic mt-1 truncate">Inspired by: {inspiredBy}</p>
         </div>
-        <span className="font-bold text-lg">{currentPrice}</span>
+        <span className="font-bold text-lg whitespace-nowrap shrink-0">{currentPrice}</span>
       </div>
 
-      {/* Expanded View */}
+      {/* Expanded View (On Hover - Yahan poora text nazar aayega bina ... ke) */}
       <div className={`absolute cursor-default bottom-0 left-0 w-full bg-white p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] flex flex-col justify-between transition-transform duration-500 ease-in-out z-20 
         ${isClicked ? 'translate-y-0' : 'translate-y-full'} 
         group-hover:translate-y-0`}
       >
         <div>
           <div className="flex justify-between items-start mb-6 text-black border-b border-gray-100 pb-4">
-            <div>
-              <h3 className="font-bold text-lg leading-tight">{title}</h3>
-              <p className="text-gray-500 text-xs">Nayab Premium Perfume</p>
+            <div className="min-w-0 flex-1 pr-3">
+              <h3 className="font-bold text-lg leading-tight">{name}</h3>
+              <p className="text-gray-500 text-xs italic mt-1">Inspired by: {inspiredBy}</p>
             </div>
-            <span className="font-bold text-lg">{currentPrice}</span>
+            {/* Price fixed on single line */}
+            <span className="font-bold text-lg whitespace-nowrap shrink-0">{currentPrice}</span>
           </div>
 
           <div className="mb-6">
             <p className="font-bold text-black mb-3 text-xs uppercase tracking-wide">Bottle Size</p>
             <div className="flex gap-2">
-              {['30 ml', '50 ml', '100 ml'].map(size => (
+              {['30ml', '50ml', '100ml'].map(size => (
                 <button 
                   key={size}
                   onClick={(e) => {

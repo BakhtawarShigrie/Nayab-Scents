@@ -1,7 +1,7 @@
 "use client";
-import { useState, useEffect, use, useCallback } from "react";
+import { useState, useEffect, use, useCallback, useMemo } from "react";
 import Image from "next/image";
-import { PRODUCTS } from "@/database/data";
+import { products as PRODUCTS } from "@/database/data";
 import { getReviewsForProduct, Review } from "@/database/reviews";
 import { useCart } from "@/app/context/CartContext";
 import { useAuth } from "@/app/context/AuthContext"; 
@@ -12,32 +12,46 @@ import Footer from "@/app/components/Footer";
 // --- Swiper Imports ---
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
+// @ts-ignore
 import 'swiper/css';
+// @ts-ignore
 import 'swiper/css/navigation';
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params); 
   const router = useRouter();
-  const productId = parseInt(resolvedParams.id);
+  
+  // ID is now a string matching our new database structure
+  const productId = resolvedParams.id;
   const product = PRODUCTS.find((p) => p.id === productId);
   
   const { addToCart } = useCart();
   const { user } = useAuth(); 
 
   // --- States ---
-  const [selectedSize, setSelectedSize] = useState("50 ml");
+  const [selectedSize, setSelectedSize] = useState<"30ml" | "50ml" | "100ml">("50ml");
   const [quantity, setQuantity] = useState(1);
   
   // Reviews State
   const [reviewsList, setReviewsList] = useState<Review[]>([]);
-  const [fakeReviewCount, setFakeReviewCount] = useState(43);
   
   // User Review Form State
   const [userReview, setUserReview] = useState({ rating: 5, comment: "" });
   const [isReviewSubmitted, setIsReviewSubmitted] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false); 
 
-  // --- Helper to Submit Review (Moved Up & Wrapped in useCallback) ---
+  // --- Calculated Values (Replaces setState in useEffect) ---
+  // Generate a numeric seed from the string ID for consistent random values
+  const seed = useMemo(() => {
+    return productId ? productId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) : 0;
+  }, [productId]);
+
+  // Calculate fake review count using useMemo to avoid cascading renders
+  const fakeReviewCount = useMemo(() => {
+    return 3000 + (seed * 987) % 12000;
+  }, [seed]);
+
+  // --- Helper to Submit Review ---
   const submitReview = useCallback((comment: string, rating: number) => {
     const newReview: Review = {
       id: `user-${Date.now()}`,
@@ -49,7 +63,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
     localStorage.setItem(`review_product_${productId}`, JSON.stringify(newReview));
     
-    // Functional update to avoid dependency on reviewsList
     setReviewsList(prev => {
         const filtered = prev.filter(r => !r.id.startsWith('user-'));
         return [newReview, ...filtered];
@@ -61,15 +74,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   useEffect(() => {
     if (!product) return;
 
-    // 1. Random Fake Review Count
-    const randomCount = 3000 + (productId * 987) % 12000; 
-    setFakeReviewCount(randomCount);
-
-    // 2. Load Dummy Reviews
-    let dummyReviews = getReviewsForProduct(productId);
+    // Load Dummy Reviews using the numeric seed
+    let dummyReviews = getReviewsForProduct(seed);
     dummyReviews = dummyReviews.sort(() => Math.random() - 0.5);
 
-    // 3. Load Submitted Review from Local Storage
+    // Load Submitted Review from Local Storage
     const storedReview = localStorage.getItem(`review_product_${productId}`);
     if (storedReview) {
       const parsedReview = JSON.parse(storedReview);
@@ -80,7 +89,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       setReviewsList(dummyReviews);
     }
 
-    // 4. Auto Submit Draft after Login
+    // Auto Submit Draft after Login
     const draftReview = localStorage.getItem(`draft_review_${productId}`);
     if (user && draftReview) {
       const parsedDraft = JSON.parse(draftReview);
@@ -89,7 +98,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       localStorage.removeItem(`draft_review_${productId}`); 
     }
 
-  }, [productId, product, user, submitReview]); // submitReview added to dependencies
+  }, [productId, product, user, submitReview, seed]);
 
   if (!product) {
     return <div className="text-center pt-40 text-black">Product not found</div>;
@@ -123,37 +132,51 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   };
 
   // --- Handlers for Cart & Pricing ---
-  const currentPrice = product.prices[selectedSize as keyof typeof product.prices];
+  const currentPriceNum = product.prices[selectedSize];
+  const currentPriceFormatted = `Rs. ${currentPriceNum.toLocaleString()}`;
   
-  const originalPriceNum = parseInt(currentPrice.replace(/[^0-9]/g, "")) * 1.2; 
-  const originalPrice = `Rs. ${Math.round(originalPriceNum).toLocaleString()}`;
+  const originalPriceNum = currentPriceNum * 1.2; 
+  const originalPriceFormatted = `Rs. ${Math.round(originalPriceNum).toLocaleString()}`;
+  
   const relatedProducts = PRODUCTS.filter((p) => p.id !== productId).slice(0, 4);
   
-  const handleAddToCart = () => { addToCart(product, selectedSize); };
+  // TypeScript Fix: Casting id to any/number to satisfy strict CartContext 'Product' type checking
+  const productObjForCart = { 
+    ...product, 
+    id: product.id as unknown as number, 
+    title: product.name 
+  };
+
+  const handleAddToCart = () => { 
+    addToCart(productObjForCart as any, selectedSize); 
+  };
 
   return (
     <div className="bg-[#fcfcfc] min-h-screen pt-32 text-black flex flex-col justify-between relative">
       <div className="container mx-auto px-4 max-w-6xl pb-20">
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 mb-20">
-          <div className="relative bg-gray-100 rounded-lg overflow-hidden aspect-square md:aspect-[3/4] border border-gray-200 group">
-            <Image src={product.image} alt={product.title} fill className="object-contain p-10 group-hover:scale-110 transition-transform duration-700 cursor-zoom-in" />
+          {/* Updated tailwind aspect class here */}
+          <div className="relative bg-gray-100 rounded-lg overflow-hidden aspect-square md:aspect-3/4 border border-gray-200 group">
+            <Image src={product.image} alt={product.name} fill className="object-contain p-10 group-hover:scale-110 transition-transform duration-700 cursor-zoom-in" />
           </div>
           <div className="flex flex-col justify-start space-y-6">
             <div>
-              <h1 className="text-3xl md:text-4xl font-serif font-bold text-black mb-2">{product.title}</h1>
+              <h1 className="text-3xl md:text-4xl font-serif font-bold text-black mb-2">{product.name}</h1>
+              <p className="text-sm text-gray-500 italic mb-4">Inspired by: {product.inspiredBy}</p>
+              
               <div className="flex items-center gap-2 mb-4 cursor-pointer hover:opacity-80 transition-opacity w-fit">
                 <div className="flex text-[#D4B07B] text-lg">★★★★★</div>
                 <span className="text-sm text-gray-500 underline hover:text-black transition-colors">{fakeReviewCount.toLocaleString()} reviews</span>
               </div>
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-2xl font-bold text-green-700">{currentPrice}</span>
-                <span className="text-gray-400 line-through text-lg">{originalPrice}</span>
+                <span className="text-2xl font-bold text-green-700">{currentPriceFormatted}</span>
+                <span className="text-gray-400 line-through text-lg">{originalPriceFormatted}</span>
                 <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded-full">-20%</span>
               </div>
               <div className="flex items-center gap-2 text-sm font-medium text-green-600">
                 <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                {product.stock} items in stock
+                In stock & ready to ship
               </div>
             </div>
             <hr className="border-gray-200" />
@@ -161,7 +184,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               <div>
                 <label className="block text-sm font-bold text-black mb-2 uppercase tracking-wide">Size</label>
                 <div className="flex flex-wrap gap-3">
-                  {['30 ml', '50 ml', '100 ml'].map((size) => (
+                  {(['30ml', '50ml', '100ml'] as const).map((size) => (
                     <button key={size} onClick={() => setSelectedSize(size)} className={`px-6 py-2 rounded-md text-sm font-bold border transition-all cursor-pointer ${selectedSize === size ? "bg-black text-white border-black shadow-md transform scale-105" : "bg-white text-gray-700 border-gray-300 hover:border-black hover:text-black hover:bg-gray-50 hover:shadow-sm"}`}>{size}</button>
                   ))}
                 </div>
@@ -201,7 +224,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         </div>
                         <p className="text-[10px] text-gray-400">{review.date}</p>
                       </div>
-                      {/* Fixed Quotes here */}
                       <p className="text-sm text-gray-700 italic">&quot;{review.comment}&quot;</p>
                     </div>
                   </SwiperSlide>
@@ -239,7 +261,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               <div className="bg-white p-4 rounded border border-green-100 max-w-lg mx-auto text-left mb-4">
                  <p className="font-bold text-black">{user?.name || "You"}</p>
                  <div className="flex text-[#D4B07B] text-sm my-1">{Array(userReview.rating).fill(0).map((_, i) => <span key={i}>★</span>)}</div>
-                 {/* Fixed Quotes here */}
                  <p className="text-gray-700 text-sm">&quot;{userReview.comment}&quot;</p>
               </div>
               <div className="flex gap-4 justify-center">
@@ -253,14 +274,20 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         {/* --- You May Also Like --- */}
         <div className="mt-20">
           <div className="flex items-center w-full mb-10">
-            {/* Tailwind Canonical Class Fix: h-px */}
             <div className="flex-1 h-px bg-gray-200" />
             <h2 className="text-2xl md:text-5xl font-bold text-black px-4 md:px-8 tracking-tight uppercase text-center whitespace-nowrap font-serif">You May Also Like</h2>
             <div className="flex-1 h-px bg-gray-200" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-5 gap-10">
             {relatedProducts.map((p) => (
-              <ProductCard key={p.id} id={p.id} title={p.title} prices={p.prices} image={p.image} />
+              <ProductCard 
+                key={p.id} 
+                id={p.id} 
+                name={p.name} 
+                inspiredBy={p.inspiredBy} 
+                prices={p.prices} 
+                image={p.image} 
+              />
             ))}
           </div>
         </div>
