@@ -22,6 +22,8 @@ export interface CartItem {
 
 interface CartContextType {
   cart: CartItem[];
+  isCartOpen: boolean;
+  toggleCart: () => void;
   addToCart: (product: Product, size: string, quantity?: number) => void;
   removeFromCart: (cartItemId: string) => void;
   updateQuantity: (cartItemId: string, quantity: number) => void;
@@ -35,6 +37,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isMounted, setIsMounted] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   // Page load par LocalStorage se cart fetch karna
   useEffect(() => {
@@ -58,14 +61,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [cart, isMounted]);
 
+  const toggleCart = () => setIsCartOpen((prev) => !prev);
+
   const addToCart = (product: Product, size: string, quantity: number = 1) => {
     setCart((prevCart) => {
-      // Different sizes ke liye unique cartItemId banaya hai
       const cartItemId = `${product.id}-${size}`;
       const existingItem = prevCart.find((item) => item.cartItemId === cartItemId);
 
       if (existingItem) {
-        // Agar item pehle se cart mein hai, toh sirf quantity barha dein
         return prevCart.map((item) =>
           item.cartItemId === cartItemId
             ? { ...item, quantity: item.quantity + quantity }
@@ -73,7 +76,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         );
       }
 
-      // Naye item ki details nikalna
       const price = product.prices[size] || 0;
       const title = product.name || product.title || "Nayab Perfume";
 
@@ -89,6 +91,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
       return [...prevCart, newItem];
     });
+    // Optional: Cart open karni ho jab item add ho tou yahan setIsCartOpen(true) likh sakte hain
   };
 
   const removeFromCart = (cartItemId: string) => {
@@ -96,7 +99,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateQuantity = (cartItemId: string, quantity: number) => {
-    if (quantity < 1) return; // Quantity 0 ya negative nahi ho sakti
+    if (quantity < 1) return; 
     setCart((prevCart) =>
       prevCart.map((item) =>
         item.cartItemId === cartItemId ? { ...item, quantity } : item
@@ -113,7 +116,17 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, cartTotal, cartCount }}
+      value={{ 
+        cart, 
+        isCartOpen, 
+        toggleCart, 
+        addToCart, 
+        removeFromCart, 
+        updateQuantity, 
+        clearCart, 
+        cartTotal, 
+        cartCount 
+      }}
     >
       {children}
     </CartContext.Provider>

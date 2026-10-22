@@ -5,7 +5,7 @@ import { useCart } from "@/app/context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function CartSidebar() {
-  const { cart, isCartOpen, toggleCart, removeFromCart, updateSize, updateQuantity, cartTotal } = useCart();
+  const { cart, isCartOpen, toggleCart, removeFromCart, updateQuantity, cartTotal } = useCart();
 
   return (
     <AnimatePresence>
@@ -49,36 +49,27 @@ export default function CartSidebar() {
                 </div>
               ) : (
                 cart.map((item) => (
-                  // KEY UPDATE: key ab ID + Size combine hai
-                  <div key={`${item.id}-${item.selectedSize}`} className="flex gap-4 border-b border-gray-200 pb-6">
+                  <div key={item.cartItemId} className="flex gap-4 border-b border-gray-200 pb-6">
                     <div className="relative w-20 h-20 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 border border-gray-300">
                       <Image src={item.image} alt={item.title} fill className="object-contain p-2" />
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between mb-1">
                         <h3 className="font-bold text-sm text-black">{item.title}</h3>
-                        <p className="font-bold text-sm text-black">{item.price}</p>
+                        <p className="font-bold text-sm text-black">Rs. {item.price.toLocaleString()}</p>
                       </div>
 
                       <div className="flex items-center gap-2 mt-2">
                         <label className="text-xs text-black font-bold uppercase">Size:</label>
-                        <select
-                          value={item.selectedSize}
-                          // UPDATE: Pass 'item.selectedSize' (oldSize)
-                          onChange={(e) => updateSize(item.id, item.selectedSize, e.target.value)}
-                          className="text-xs border cursor-pointer border-gray-400 rounded px-2 py-1 bg-white text-black focus:outline-none focus:border-black font-medium"
-                        >
-                          <option value="30 ml">30 ml</option>
-                          <option value="50 ml">50 ml</option>
-                          <option value="100 ml">100 ml</option>
-                        </select>
+                        <span className="text-xs border border-gray-300 rounded px-2 py-1 bg-gray-50 text-black font-medium">
+                          {item.size}
+                        </span>
                       </div>
 
                       <div className="flex justify-between items-center mt-4">
                         <div className="flex items-center border border-gray-400 rounded bg-white">
                           <button 
-                            // UPDATE: Pass 'item.selectedSize'
-                            onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity - 1)}
+                            onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}
                             className="px-2 cursor-pointer py-1 text-black hover:bg-gray-200 border-r border-gray-300 disabled:opacity-50"
                             disabled={item.quantity <= 1}
                           >
@@ -86,8 +77,7 @@ export default function CartSidebar() {
                           </button>
                           <span className="px-3 text-xs text-black font-bold">{item.quantity}</span>
                           <button 
-                            // UPDATE: Pass 'item.selectedSize'
-                            onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity + 1)}
+                            onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
                             className="px-2 py-1 cursor-pointer text-black hover:bg-gray-200 border-l border-gray-300"
                           >
                             +
@@ -95,8 +85,7 @@ export default function CartSidebar() {
                         </div>
 
                         <button
-                          // UPDATE: Pass 'item.selectedSize'
-                          onClick={() => removeFromCart(item.id, item.selectedSize)}
+                          onClick={() => removeFromCart(item.cartItemId)}
                           className="text-xs cursor-pointer text-red-600 hover:text-red-800 font-bold underline"
                         >
                           Remove
