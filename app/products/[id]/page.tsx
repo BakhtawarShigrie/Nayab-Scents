@@ -40,15 +40,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const [isReviewSubmitted, setIsReviewSubmitted] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false); 
 
-  // --- Calculated Values (Replaces setState in useEffect) ---
+  // --- Calculated Values ---
   // Generate a numeric seed from the string ID for consistent random values
   const seed = useMemo(() => {
     return productId ? productId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) : 0;
   }, [productId]);
 
-  // Calculate fake review count using useMemo to avoid cascading renders
+  // Calculate fake review count between 550 and 999
   const fakeReviewCount = useMemo(() => {
-    return 3000 + (seed * 987) % 12000;
+    return 550 + (seed * 987) % (999 - 550 + 1);
   }, [seed]);
 
   // --- Helper to Submit Review ---
@@ -74,9 +74,18 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   useEffect(() => {
     if (!product) return;
 
-    // Load Dummy Reviews using the numeric seed
+    // Load Dummy Reviews
     let dummyReviews = getReviewsForProduct(seed);
-    dummyReviews = dummyReviews.sort(() => Math.random() - 0.5);
+    
+    // Sort randomly aur dates ko current/recent date (0 se 4 din pehle) se replace karein
+    dummyReviews = dummyReviews.sort(() => Math.random() - 0.5).map((review) => {
+      const daysAgo = Math.floor(Math.random() * 5); // 0 to 4 days ago
+      const date = new Date();
+      date.setDate(date.getDate() - daysAgo);
+      const formattedDate = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      
+      return { ...review, date: formattedDate };
+    });
 
     // Load Submitted Review from Local Storage
     const storedReview = localStorage.getItem(`review_product_${productId}`);
@@ -147,8 +156,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     title: product.name 
   };
 
+  // Handle Add to Cart button
   const handleAddToCart = () => { 
-    addToCart(productObjForCart as any, selectedSize); 
+    addToCart(productObjForCart as any, selectedSize, quantity); 
+  };
+
+  // Handle Buy It Now button (Adds to cart & redirects to checkout)
+  const handleBuyItNow = () => {
+    addToCart(productObjForCart as any, selectedSize, quantity);
+    router.push('/checkout');
   };
 
   return (
@@ -156,7 +172,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       <div className="container mx-auto px-4 max-w-6xl pb-20">
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 mb-20">
-          {/* Updated tailwind aspect class here */}
           <div className="relative bg-gray-100 rounded-lg overflow-hidden aspect-square md:aspect-3/4 border border-gray-200 group">
             <Image src={product.image} alt={product.name} fill className="object-contain p-10 group-hover:scale-110 transition-transform duration-700 cursor-zoom-in" />
           </div>
@@ -198,10 +213,19 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 </div>
               </div>
             </div>
+            
+            {/* Action Buttons */}
             <div className="space-y-3 pt-4">
-              <button onClick={handleAddToCart} className="w-full bg-[#3d0c11] hover:bg-[#2a080c] hover:scale-[1.01] text-white py-4 rounded-full font-bold uppercase tracking-widest transition-all shadow-lg text-sm cursor-pointer active:scale-95">Add to cart</button>
-              <button onClick={() => router.push('/checkout')} className="w-full bg-white border border-[#3d0c11] text-[#3d0c11] hover:bg-[#3d0c11] hover:text-white py-4 rounded-full font-bold uppercase tracking-widest transition-all text-sm cursor-pointer active:scale-95 hover:shadow-md">Buy it now</button>
-              <button className="w-full bg-gray-800 hover:bg-black text-white py-4 rounded-full font-bold uppercase tracking-widest transition-all shadow-md flex items-center justify-center gap-2 text-sm mt-2 cursor-pointer hover:shadow-xl hover:scale-[1.01] active:scale-95"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/></svg>Product Video</button>
+              <button onClick={handleBuyItNow} className="w-full bg-[#3d0c11] hover:bg-[#2a080c] hover:scale-[1.01] text-white py-4 rounded-full font-bold uppercase tracking-widest transition-all shadow-lg text-sm cursor-pointer active:scale-95">
+                Buy it now
+              </button>
+              <button onClick={handleAddToCart} className="w-full bg-white border border-[#3d0c11] text-[#3d0c11] hover:bg-[#3d0c11] hover:text-white py-4 rounded-full font-bold uppercase tracking-widest transition-all text-sm cursor-pointer active:scale-95 hover:shadow-md">
+                Add to cart
+              </button>
+              <button className="w-full bg-gray-800 hover:bg-black text-white py-4 rounded-full font-bold uppercase tracking-widest transition-all shadow-md flex items-center justify-center gap-2 text-sm mt-2 cursor-pointer hover:shadow-xl hover:scale-[1.01] active:scale-95">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/></svg>
+                Product Video
+              </button>
             </div>
 
             {/* REVIEWS SLIDER */}
