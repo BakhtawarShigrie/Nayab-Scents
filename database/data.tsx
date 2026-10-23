@@ -86,6 +86,13 @@ export const products = [
     inspiredBy: "Thomas Kosmala No-4",
     prices: { "30ml": 1799, "50ml": 2299, "100ml": 3799 },
     image: "https://res.cloudinary.com/lrskxjqs/image/upload/v1792742001/Afterglow.jpg",
+  },
+  {
+    id: "mountain",
+    name: "Mountain",
+    inspiredBy: "Hugo Boss Bottled",
+    prices: { "30ml": 1350, "50ml": 1799, "100ml": 2699 },
+    image: "https://res.cloudinary.com/lrskxjqs/image/upload/v1792763184/Mountain.jpg",
   }
 ];
 
