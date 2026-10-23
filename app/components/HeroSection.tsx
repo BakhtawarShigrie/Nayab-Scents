@@ -6,13 +6,11 @@ import { motion, useScroll, useTransform } from "framer-motion";
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Optimized Scroll Tracking
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // --- Animation Values ---
   const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
   const heroY = useTransform(scrollYProgress, [0, 0.15], ["0px", "-50px"]);
   const bottleEntry = useTransform(scrollYProgress, [0.1, 0.25], [0, 1]);
@@ -26,7 +24,6 @@ export default function HeroSection() {
   const bgScale = useTransform(scrollYProgress, [0, 1], [1, 1.25]);
   const bgBlur = useTransform(scrollYProgress, [0, 1], ["0px", "10px"]);
 
-  // --- SMOOTH SCROLL HANDLER ---
   const handleScroll = (e: React.MouseEvent) => {
     e.preventDefault();
     const target = document.getElementById("trending");
@@ -36,7 +33,6 @@ export default function HeroSection() {
   };
 
   return (
-    // FIX: Height increased to 1000vh to slow down scroll speed (0.5x)
     <div ref={containerRef} className="relative h-[1000vh]">
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
         
@@ -52,7 +48,14 @@ export default function HeroSection() {
               filter: useTransform(bgBlur, (v) => `blur(${v})`) 
             }}
           >
-            <Image src="/Dcover-01.webp" alt="Background" fill priority className="object-cover opacity-60" />
+            {/* Cloudinary Background Link */}
+            <Image 
+              src="https://res.cloudinary.com/lrskxjqs/image/upload/v1792742084/Dcover-01.webp" 
+              alt="Background" 
+              fill 
+              priority 
+              className="object-cover opacity-60" 
+            />
             <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80" />
           </motion.div>
         </motion.div>
@@ -73,7 +76,6 @@ export default function HeroSection() {
             Experience Nayab Scents – premium perfumes crafted for exceptional projection and long-lasting elegance.
           </p>
           
-          {/* Button with Smooth Scroll */}
           <button 
             onClick={handleScroll}
             className="relative z-50 px-10 py-4 cursor-pointer bg-white text-black font-bold uppercase tracking-widest text-sm rounded-full hover:bg-black hover:text-white transition-all duration-300 shadow-xl hover:scale-105 active:scale-95"
@@ -97,7 +99,14 @@ export default function HeroSection() {
           <div className="transform transition-transform duration-75 ease-linear translate-y-[calc(var(--split-progress)*25vh)] md:translate-y-0 md:translate-x-[calc(var(--split-progress)*25vw)]">
               <div className="relative w-[50vw] h-[50vh] md:w-[25vw] md:h-[65vh]">
               <div className="absolute inset-0 bg-green-600 rounded-full blur-3xl opacity-20 animate-pulse"></div>
-              <Image src="/bottle-01.png" alt="Green Water Bottle" fill className="object-contain drop-shadow-2xl filter brightness-110" priority />
+              {/* Cloudinary Bottle Link */}
+              <Image 
+                src="https://res.cloudinary.com/lrskxjqs/image/upload/v1792742035/bottle-01.png" 
+                alt="Green Water Bottle" 
+                fill 
+                className="object-contain drop-shadow-2xl filter brightness-110" 
+                priority 
+              />
             </div>
           </div>
         </motion.div>
@@ -124,7 +133,6 @@ export default function HeroSection() {
                   Meet the Nayab Scents collection, crafted for powerful projection, long-lasting wear, and undeniable sophistication.
                 </p>
                 
-                {/* 2nd Button with Smooth Scroll */}
                 <button 
                   onClick={handleScroll}
                   className="pointer-events-auto rounded-full bg-green-600 px-6 py-2.5 md:px-8 md:py-3 font-semibold shadow-lg shadow-green-900/50 transition-all hover:bg-green-500 hover:scale-105 text-white cursor-pointer"
