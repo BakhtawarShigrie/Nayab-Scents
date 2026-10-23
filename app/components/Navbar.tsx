@@ -114,10 +114,10 @@ export default function Navbar() {
   };
 
   const menuItems = [
-    { name: "Sale", href: "/products?sale=true", color: "text-red-600" },
-    { name: "Best & Trending", href: "/#trending" },
+    { name: "Sale", href: "/#trending", color: "text-red-600" }, // Updated to Trending
+    { name: "Best & Trending", href: "/#trending" }, // Updated to Trending
     { name: "All Products", href: "/products" },
-    { name: "Discounted Bundle", href: "/#collections" }, 
+    { name: "Discounted Bundle", href: "/bundles" }, // Updated to Bundles page
     { name: "Articles", href: "/#journal" }, 
     { name: "FAQ's", href: "/#faq" }, 
     { name: "About us", action: "about" }, 

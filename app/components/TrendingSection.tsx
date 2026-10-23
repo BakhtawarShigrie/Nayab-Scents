@@ -1,6 +1,6 @@
 "use client";
 import ProductCard from "./ProductCard";
-import { products } from "@/database/data"; // Uppercase PRODUCTS ko lowercase products se replace kiya
+import { products } from "@/database/data"; 
 import Link from "next/link"; 
 
 export default function TrendingSection() {
@@ -8,7 +8,7 @@ export default function TrendingSection() {
   const trendingProducts = products.slice(0, 4);
 
   return (
-    <section className="py-20 bg-[#fcfcfc]">
+    <section id="trending" className="py-20 bg-[#fcfcfc]">
       <div className="container mx-auto px-4 max-w-6xl">
         
         {/* Section Heading */}

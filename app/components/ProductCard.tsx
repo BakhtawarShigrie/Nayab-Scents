@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/app/context/CartContext";
 import { useWishlist } from "@/app/context/WishlistContext";
 
@@ -17,6 +18,7 @@ const ProductCard = ({ id, name, inspiredBy, prices, image }: ProductCardProps) 
   const [isClicked, setIsClicked] = useState(false);
   const [selectedSize, setSelectedSize] = useState("50ml");
   const { addToCart } = useCart();
+  const router = useRouter();
   
   // Wishlist Hook Usage
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
@@ -25,8 +27,11 @@ const ProductCard = ({ id, name, inspiredBy, prices, image }: ProductCardProps) 
   const numericId = id as unknown as number;
   const isWishlisted = isInWishlist(numericId);
 
-  // Formatting price to show with Rs.
-  const currentPrice = `Rs. ${prices[selectedSize]?.toLocaleString()}`;
+  // Formatting current and original prices
+  const currentPriceNum = prices[selectedSize];
+  const currentPrice = `Rs. ${currentPriceNum?.toLocaleString()}`;
+  const originalPriceNum = currentPriceNum * 1.2; 
+  const originalPrice = `Rs. ${Math.round(originalPriceNum).toLocaleString()}`;
   
   // TypeScript Fix: Using 'any' to bypass strict CartContext 'Product' type checking
   const productObj = { id: numericId, title: name, prices, image };
@@ -34,6 +39,7 @@ const ProductCard = ({ id, name, inspiredBy, prices, image }: ProductCardProps) 
   const handleOrderNow = (e: React.MouseEvent) => {
     e.stopPropagation();
     addToCart(productObj as any, selectedSize);
+    router.push("/checkout"); // Direct checkout redirect
   };
 
   // Handle Wishlist Toggle
@@ -74,28 +80,39 @@ const ProductCard = ({ id, name, inspiredBy, prices, image }: ProductCardProps) 
         <Image src={image} alt={name} fill className="object-contain transition-transform duration-500 group-hover:scale-105" />
       </div>
 
-      {/* Default View (Yahan truncate wapas add kar diya gaya hai taake ... aaye) */}
+      {/* Default View */}
       <div className="p-5 flex justify-between items-start text-black group-hover:opacity-0 transition-opacity duration-300">
-        <div className="min-w-0 flex-1 pr-3">
+        <div className="min-w-0 flex-1 pr-2">
           <h3 className="font-bold text-lg leading-tight truncate">{name}</h3>
           <p className="text-gray-500 text-xs italic mt-1 truncate">Inspired by: {inspiredBy}</p>
         </div>
-        <span className="font-bold text-lg whitespace-nowrap shrink-0">{currentPrice}</span>
+        <div className="text-right shrink-0">
+          <span className="font-bold text-lg whitespace-nowrap block leading-none">{currentPrice}</span>
+          <div className="flex items-center justify-end gap-1 mt-1.5">
+            <span className="text-gray-400 line-through text-[10px]">{originalPrice}</span>
+            <span className="bg-red-100 text-red-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none">-20%</span>
+          </div>
+        </div>
       </div>
 
-      {/* Expanded View (On Hover - Yahan poora text nazar aayega bina ... ke) */}
+      {/* Expanded View (On Hover) */}
       <div className={`absolute cursor-default bottom-0 left-0 w-full bg-white p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] flex flex-col justify-between transition-transform duration-500 ease-in-out z-20 
         ${isClicked ? 'translate-y-0' : 'translate-y-full'} 
         group-hover:translate-y-0`}
       >
         <div>
           <div className="flex justify-between items-start mb-6 text-black border-b border-gray-100 pb-4">
-            <div className="min-w-0 flex-1 pr-3">
+            <div className="min-w-0 flex-1 pr-2">
               <h3 className="font-bold text-lg leading-tight">{name}</h3>
               <p className="text-gray-500 text-xs italic mt-1">Inspired by: {inspiredBy}</p>
             </div>
-            {/* Price fixed on single line */}
-            <span className="font-bold text-lg whitespace-nowrap shrink-0">{currentPrice}</span>
+            <div className="text-right shrink-0">
+              <span className="font-bold text-lg whitespace-nowrap block leading-none">{currentPrice}</span>
+              <div className="flex items-center justify-end gap-1 mt-1.5">
+                <span className="text-gray-400 line-through text-[10px]">{originalPrice}</span>
+                <span className="bg-red-100 text-red-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none">-20%</span>
+              </div>
+            </div>
           </div>
 
           <div className="mb-6">
