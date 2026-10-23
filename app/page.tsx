@@ -3,9 +3,9 @@
 import HeroSection from "./components/HeroSection";
 import CategoriesSection from "./components/CategoriesSection";
 import TrendingSection from "./components/TrendingSection";
-import CollectionsSection from "./components/CollectionsSection";
+// import CollectionsSection from "./components/CollectionsSection";
 import AdSection from "./components/AdSection";
-import MagazineSection from "./components/MagazineSection";
+// import MagazineSection from "./components/MagazineSection";
 import FAQSection from "./components/FAQSection";
 import Footer from "./components/Footer";
 
@@ -15,9 +15,9 @@ export default function Home() {
       <HeroSection />
       <CategoriesSection />
       <TrendingSection />
-      <CollectionsSection />
+      {/* <CollectionsSection /> */}
+      {/* <MagazineSection /> */}
       <AdSection />
-      <MagazineSection />
       <FAQSection />
       <Footer />
     </div>
